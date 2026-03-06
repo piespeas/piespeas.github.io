@@ -649,6 +649,33 @@
     margin: 0 3rem;
   }
 
+  /* ───── COPY BUTTON ───── */
+  .copy-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    color: var(--accent3);
+    background: rgba(0,255,136,0.05);
+    border: 1px solid rgba(0,255,136,0.25);
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .copy-btn:hover {
+    background: rgba(0,255,136,0.12);
+    border-color: var(--accent3);
+    box-shadow: 0 0 16px rgba(0,255,136,0.2);
+  }
+
+  .copy-btn.copied {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(0,200,255,0.08);
+  }
+
   /* ───── CONTACT ───── */
   .contact-box {
     background: var(--panel);
@@ -779,9 +806,7 @@ REPORT_GENERATE......[PENDING]</div>
     <h1 class="hero-name fade-in delay-1">
       ACOUSTIC<br><span class="accent-word">VOID</span>
     </h1>
-    <div class="hero-role fade-in delay-2">
-      PC Checker<span class="sep">//</span>DFIR Analyst<span class="sep">//</span>Anti-Cheat Investigator
-    </div>
+    <div class="hero-role fade-in delay-2" id="typed-role"></div>
     <p class="hero-bio fade-in delay-3">
       Specializing in <strong>Windows forensic artifact analysis</strong>, live system investigation, 
       and the detection of cheat execution methods and anti-forensic behavior. 
@@ -1063,6 +1088,9 @@ REPORT_GENERATE......[PENDING]</div>
         <span class="discord-handle">piespeas</span>
       </div>
     </a>
+    <button class="copy-btn" id="copyBtn" onclick="copyDiscord()">
+      <span id="copyLabel">COPY USERNAME</span>
+    </button>
   </div>
 </section>
 
@@ -1081,7 +1109,7 @@ REPORT_GENERATE......[PENDING]</div>
 </footer>
 
 <script>
-  // Intersection observer for scroll animations
+  // ── Scroll animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(el => {
       if (el.isIntersecting) {
@@ -1098,12 +1126,65 @@ REPORT_GENERATE......[PENDING]</div>
     observer.observe(el);
   });
 
-  // Subtle mouse parallax on hero grid
+  // ── Hero parallax
   document.querySelector('.hero').addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth - 0.5) * 10;
     const y = (e.clientY / window.innerHeight - 0.5) * 10;
     document.querySelector('.hero-grid').style.transform = `translate(${x}px, ${y}px)`;
   });
+
+  // ── Typing effect
+  const phrases = [
+    'PC Checker // DFIR Analyst // Anti-Cheat Investigator',
+    'Windows Forensics // Artifact Analysis // Live Investigations',
+    'Lead Screensharer // Staff Supervisor // Detect.ac'
+  ];
+  let phraseIndex = 0, charIndex = 0, deleting = false;
+  const typedEl = document.getElementById('typed-role');
+
+  function type() {
+    const current = phrases[phraseIndex];
+    if (!deleting) {
+      typedEl.textContent = current.slice(0, charIndex + 1);
+      charIndex++;
+      if (charIndex === current.length) {
+        deleting = true;
+        setTimeout(type, 2200);
+        return;
+      }
+    } else {
+      typedEl.textContent = current.slice(0, charIndex - 1);
+      charIndex--;
+      if (charIndex === 0) {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % phrases.length;
+      }
+    }
+    setTimeout(type, deleting ? 32 : 55);
+  }
+
+  setTimeout(type, 900);
+
+  // Add blinking cursor to typed element
+  typedEl.style.borderRight = '2px solid var(--accent)';
+  typedEl.style.paddingRight = '4px';
+  setInterval(() => {
+    typedEl.style.borderColor = typedEl.style.borderColor === 'transparent' ? 'var(--accent)' : 'transparent';
+  }, 500);
+
+  // ── Copy Discord username
+  function copyDiscord() {
+    navigator.clipboard.writeText('piespeas').then(() => {
+      const btn = document.getElementById('copyBtn');
+      const label = document.getElementById('copyLabel');
+      btn.classList.add('copied');
+      label.textContent = '✓ COPIED!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        label.textContent = 'COPY USERNAME';
+      }, 2000);
+    });
+  }
 </script>
 </body>
 </html>
