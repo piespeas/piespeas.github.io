@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; font-size: 16px; }
+html { scroll-behavior: auto; font-size: 16px; }
 
 :root {
   --black:   #0a0a0a;
@@ -50,6 +50,16 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   cursor: default;
+}
+
+/* ── PAGE FADE-IN ── */
+#page-veil {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  z-index: 9999;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 /* ── TEXTURE OVERLAY ── */
@@ -212,7 +222,7 @@ nav {
   position: absolute;
   top: 50%;
   right: -1%;
-  transform: translateY(-50%);
+  transform: translateY(calc(-50% + var(--parallax, 0px)));
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(7rem, 16vw, 16rem);
   font-weight: 300;
@@ -223,6 +233,7 @@ nav {
   pointer-events: none;
   z-index: 0;
   user-select: none;
+  will-change: transform;
 }
 
 .hero-left { position: relative; z-index: 1; }
@@ -515,7 +526,7 @@ nav {
   padding: 2rem 0;
   border-bottom: 1px solid var(--rule);
   position: relative;
-  transition: background 0.15s;
+  transition: background 0.2s, transform 0.25s cubic-bezier(.22,1,.36,1);
 }
 .pos-row:first-child { border-top: 1px solid var(--rule); }
 .pos-row::before {
@@ -527,7 +538,7 @@ nav {
   transition: background 0.2s;
 }
 .pos-row:hover::before { background: var(--gold); }
-.pos-row:hover { background: rgba(200,169,110,0.02); }
+.pos-row:hover { background: rgba(200,169,110,0.02); transform: translateX(4px); }
 .p-org {
   font-family: 'Space Mono', monospace;
   font-size: 0.62rem;
@@ -812,6 +823,8 @@ footer {
 </head>
 <body>
 
+<div id="page-veil"></div>
+
 <div id="prog"></div>
 
 <!-- NAV -->
@@ -833,10 +846,10 @@ footer {
 </nav>
 
 <div class="mob-nav" id="mobNav">
-  <a href="#positions" onclick="closeMob()">Positions</a>
-  <a href="#expertise" onclick="closeMob()">Expertise</a>
-  <a href="#focus" onclick="closeMob()">Focus</a>
-  <a href="#contact" onclick="closeMob()">Contact</a>
+  <a href="#positions">Positions</a>
+  <a href="#expertise">Expertise</a>
+  <a href="#focus">Focus</a>
+  <a href="#contact">Contact</a>
 </div>
 
 <!-- HERO -->
@@ -1105,13 +1118,13 @@ footer {
       <p class="c-sub">Whether you're looking to bring on an experienced PC checker, need an investigator for your community, or want to discuss digital forensics and anti-cheat methodology — reach out directly on Discord.</p>
     </div>
     <div class="contact-right-pane">
-      <a href="https://discord.com/users/piespeas" target="_blank" rel="noopener noreferrer" class="discord-btn">
+      <a href="https://discord.gg/kb8X9dvUrW" target="_blank" rel="noopener noreferrer" class="discord-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865f2" style="flex-shrink:0;opacity:0.8">
           <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.055a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
         </svg>
         <div>
-          <span class="d-lbl">Discord — Click to open</span>
-          <span class="d-handle">piespeas</span>
+          <span class="d-lbl">Discord — Join Server</span>
+          <span class="d-handle">Acoustic SS Server</span>
         </div>
       </a>
       <button class="copy-btn" id="copyBtn" onclick="copyHandle()">
@@ -1134,11 +1147,26 @@ footer {
 </footer>
 
 <script>
+// Page fade-in
+const veil = document.getElementById('page-veil');
+window.addEventListener('load', () => {
+  requestAnimationFrame(() => { veil.style.opacity = '0'; });
+  setTimeout(() => { veil.style.display = 'none'; }, 450);
+});
+
 // Progress bar
 const prog = document.getElementById('prog');
-window.addEventListener('scroll', () => {
-  prog.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
-}, { passive: true });
+
+// Parallax on DFIR watermark
+const heroEl = document.querySelector('.hero');
+function onScroll() {
+  const sy = window.scrollY;
+  prog.style.width = (sy / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+  if (heroEl) {
+    heroEl.style.setProperty('--parallax', `${sy * 0.18}px`);
+  }
+}
+window.addEventListener('scroll', onScroll, { passive: true });
 
 // Scroll reveal
 const ro = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.07 });
@@ -1188,6 +1216,31 @@ setTimeout(tick, 1000);
 setInterval(() => {
   typed.style.borderRightColor = typed.style.borderRightColor === 'transparent' ? 'var(--gold)' : 'transparent';
 }, 520);
+
+// Smooth anchor scroll with easing
+function easeInOutQuart(t) { return t < 0.5 ? 8*t*t*t*t : 1 - 8*(--t)*t*t*t; }
+function smoothScrollTo(target) {
+  const start = window.scrollY;
+  const end = target.getBoundingClientRect().top + start - 56;
+  const duration = 800;
+  let startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    window.scrollTo(0, start + (end - start) * easeInOutQuart(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) { e.preventDefault(); smoothScrollTo(el); closeMob(); }
+  });
+});
 
 // Mobile nav
 const burger = document.getElementById('burger');
