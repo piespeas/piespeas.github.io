@@ -7,608 +7,1202 @@
 <meta name="description" content="Digital forensics investigator specialising in Windows artifact analysis, anti-cheat investigation, and incident response.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="AcousticVoid — Digital Forensics Investigator">
-<meta property="og:description" content="Specialising in Windows forensic artifact analysis, anti-cheat investigation, and DFIR. PC Checker at Detect.ac · Lead Screensharer · Staff Supervisor.">
-<meta name="theme-color" content="#00b4d8">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AcousticVoid — Digital Forensics Investigator">
-<meta name="twitter:description" content="Specialising in Windows forensic artifact analysis, anti-cheat investigation, and DFIR.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080c10'/><text x='16' y='22' font-family='monospace' font-size='14' font-weight='bold' fill='%2300b4d8' text-anchor='middle'>AV</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta property="og:description" content="Specialising in Windows forensic artifact analysis, anti-cheat investigation, and DFIR.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0a'/><text x='16' y='23' font-family='Georgia,serif' font-size='15' font-weight='bold' fill='%23c8a96e' text-anchor='middle'>AV</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Neue+Haas+Grotesk+Display+Pro:wght@400;500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
 
-:root{
-  --ink:#080c10;--ink2:#0e1318;--ink3:#141a22;
-  --rule:#1a2130;--rule2:#243040;
-  --muted:#4a5a6e;--body:#7a8fa8;--text:#b8cce0;--bright:#e8f2fc;
-  --accent:#00b4d8;--accent-dim:#0077a8;--accent-faint:rgba(0,180,216,0.07);
-  --accent2:#00d4a8;--accent2-faint:rgba(0,212,168,0.07);
-  --warn:#e05a5a;--gold:#c8a94a;--purple:#8b7fd4;
-  --green:#00c896;--green-faint:rgba(0,200,150,0.07);
-  --radius:5px;
+:root {
+  --black:   #0a0a0a;
+  --black2:  #0f0f0f;
+  --black3:  #141414;
+  --black4:  #1a1a1a;
+  --rule:    #222222;
+  --rule2:   #2e2e2e;
+  --dim3:    #383838;
+  --dim2:    #505050;
+  --dim:     #686868;
+  --mid:     #8a8a8a;
+  --sub:     #aaaaaa;
+  --text:    #cccccc;
+  --light:   #e8e8e8;
+  --white:   #f5f5f0;
+  --gold:    #c8a96e;
+  --gold2:   #e8c98e;
+  --gold-f:  rgba(200,169,110,0.08);
+  --green:   #5a9a6a;
+  --green-f: rgba(90,154,106,0.08);
+  --purple:  #8878b8;
+  --purple-f:rgba(136,120,184,0.08);
+  --r: 0px;
 }
 
-body{background:var(--ink);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:48px 48px;opacity:0.25;pointer-events:none;z-index:0}
-
-/* Subtle radial glow behind hero */
-body::after{content:'';position:fixed;top:-20%;left:-10%;width:70%;height:70%;background:radial-gradient(ellipse,rgba(0,180,216,0.04) 0%,transparent 65%);pointer-events:none;z-index:0}
-
-/* PROGRESS BAR */
-#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent-dim),var(--accent),var(--accent2));width:0%;z-index:300;transition:width 0.1s linear;box-shadow:0 0 8px rgba(0,180,216,0.4)}
-
-/* PAGE LOAD */
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.load-1{animation:fadeUp 0.5s ease both 0.05s}
-.load-2{animation:fadeUp 0.5s ease both 0.15s}
-.load-3{animation:fadeUp 0.5s ease both 0.25s}
-.load-4{animation:fadeUp 0.5s ease both 0.35s}
-.load-5{animation:fadeUp 0.5s ease both 0.45s}
-.load-6{animation:fadeUp 0.5s ease both 0.55s}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 4rem;background:rgba(8,12,16,0.94);border-bottom:1px solid var(--rule);backdrop-filter:blur(20px)}
-.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:0.04em;color:var(--bright);text-decoration:none;z-index:201}
-.nav-logo span{color:var(--accent)}
-.nav-links{display:flex;align-items:center;gap:2.5rem;list-style:none}
-.nav-links a{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color 0.15s;position:relative;padding-bottom:2px}
-.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:1px;background:var(--accent);transform:scaleX(0);transition:transform 0.2s}
-.nav-links a:hover,.nav-links a.active{color:var(--text)}
-.nav-links a.active::after{transform:scaleX(1)}
-.nav-right{display:flex;align-items:center;gap:1rem}
-.nav-pill{display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0.9rem;border:1px solid rgba(0,200,150,0.25);border-radius:999px;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;color:var(--green);background:var(--green-faint)}
-.nav-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:breathe 2.5s ease-in-out infinite}
-@keyframes breathe{0%,100%{opacity:1}50%{opacity:0.3}}
-
-/* MOBILE BURGER */
-.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:201;background:none;border:none}
-.nav-burger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.25s}
-.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav-burger.open span:nth-child(2){opacity:0}
-.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.mobile-nav{display:none;position:fixed;top:60px;left:0;right:0;z-index:199;background:rgba(8,12,16,0.98);border-bottom:1px solid var(--rule);backdrop-filter:blur(20px);padding:1.5rem 2rem;flex-direction:column;gap:0}
-.mobile-nav.open{display:flex}
-.mobile-nav a{font-family:'DM Mono',monospace;font-size:0.85rem;letter-spacing:0.1em;color:var(--text);text-decoration:none;text-transform:uppercase;padding:0.9rem 0;border-bottom:1px solid var(--rule);transition:color 0.15s}
-.mobile-nav a:last-child{border-bottom:none}
-.mobile-nav a:hover{color:var(--accent)}
-
-/* HERO */
-.hero{position:relative;z-index:1;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:4rem;padding:120px 4rem 80px;max-width:1280px;margin:0 auto}
-.hero-eyebrow{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.8rem}
-.eyebrow-line{width:24px;height:1px;background:var(--accent)}
-.eyebrow-text{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.18em;color:var(--accent);text-transform:uppercase}
-.hero-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.8rem,5vw,4.5rem);line-height:1.05;letter-spacing:-0.02em;color:var(--bright);margin-bottom:1rem}
-.hero-name .dim{color:var(--muted);font-weight:400}
-.hero-typed{font-family:'DM Mono',monospace;font-size:0.88rem;color:var(--accent);letter-spacing:0.04em;margin-bottom:2rem;min-height:1.5em;border-right:2px solid var(--accent);display:inline-block;padding-right:3px}
-.hero-bio{font-size:1rem;color:var(--body);line-height:1.75;max-width:480px;margin-bottom:2.5rem}
-.hero-bio strong{color:var(--text);font-weight:500}
-.hero-actions{display:flex;gap:0.75rem;flex-wrap:wrap}
-
-.btn{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;padding:0.7rem 1.6rem;border-radius:var(--radius);transition:all 0.2s;cursor:pointer;border:none}
-.btn-primary{background:var(--accent-dim);color:var(--bright);border:1px solid var(--accent-dim)}
-.btn-primary:hover{background:var(--accent);border-color:var(--accent);box-shadow:0 0 24px rgba(0,180,216,0.25)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--rule2)}
-.btn-ghost:hover{border-color:var(--muted);color:var(--bright)}
-
-/* HERO CARD */
-.hero-card{background:var(--ink2);border:1px solid var(--rule);border-radius:10px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(0,180,216,0.05)}
-.card-header{display:flex;align-items:center;gap:0.5rem;padding:0.8rem 1.2rem;background:var(--ink3);border-bottom:1px solid var(--rule)}
-.card-dot{width:10px;height:10px;border-radius:50%}
-.cd-r{background:#d05050}.cd-y{background:#c8901a}.cd-g{background:#1a9640}
-.card-title{flex:1;text-align:center;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em}
-.card-body{padding:1.4rem 1.6rem;font-family:'DM Mono',monospace;font-size:0.78rem;line-height:2}
-.cl{display:block}
-.c-comment{color:var(--muted);font-style:italic}
-.c-key{color:var(--accent)}.c-str{color:var(--accent2)}.c-num{color:var(--gold)}.c-bracket{color:var(--rule2)}
-.c-indent{padding-left:1.2rem}
-.c-cursor{display:inline-block;width:7px;height:14px;background:var(--accent);vertical-align:middle;animation:blink 1s step-end infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-/* DIVIDER */
-.full-divider{position:relative;z-index:1;height:1px;background:var(--rule)}
-
-/* STATS */
-.stats-bar{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
-.stat-item{padding:2rem;text-align:center;border-right:1px solid var(--rule);transition:background 0.2s;cursor:default}
-.stat-item:last-child{border-right:none}
-.stat-item:hover{background:var(--ink2)}
-.stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:var(--bright);line-height:1;margin-bottom:0.35rem;letter-spacing:-0.02em}
-.stat-val span{color:var(--accent)}
-.stat-lbl{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase}
-
-/* CURRENTLY STUDYING BANNER */
-.studying-banner{position:relative;z-index:1;background:rgba(139,127,212,0.04);border-bottom:1px solid rgba(139,127,212,0.12);padding:0.85rem 4rem;display:flex;align-items:center;gap:1rem}
-.studying-label{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;color:var(--purple);text-transform:uppercase;flex-shrink:0}
-.studying-items{display:flex;gap:0.5rem;flex-wrap:wrap}
-.studying-tag{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.05em;padding:0.2rem 0.65rem;border-radius:999px;background:rgba(139,127,212,0.07);border:1px solid rgba(139,127,212,0.18);color:var(--purple)}
-
-/* SECTIONS */
-.section{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:5rem 4rem}
-.section-label{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
-.label-num{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);letter-spacing:0.1em}
-.label-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.35rem;color:var(--bright);letter-spacing:-0.01em}
-.label-line{flex:1;height:1px;background:var(--rule)}
-
-/* NAV SCROLL OFFSET FIX */
-[id]{scroll-margin-top:76px}
-
-/* POSITIONS */
-.positions{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
-.position-row{display:grid;grid-template-columns:190px 1fr auto;align-items:start;gap:2rem;padding:1.8rem 2rem;background:var(--ink);transition:background 0.2s;position:relative}
-.position-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background 0.2s}
-.position-row:hover{background:var(--ink2)}
-.position-row:hover::before{background:var(--accent)}
-.pos-org{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.05em;color:var(--muted);padding-top:0.2rem}
-.pos-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--bright);margin-bottom:0.45rem;letter-spacing:-0.01em}
-.pos-desc{font-size:0.88rem;color:var(--body);line-height:1.65}
-.pos-badge{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;padding:0.25rem 0.75rem;border-radius:999px;white-space:nowrap;flex-shrink:0;margin-top:0.15rem}
-.badge-active{background:rgba(0,200,150,0.07);border:1px solid rgba(0,200,150,0.25);color:var(--green)}
-
-/* EXPERTISE */
-.expertise-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
-.exp-card{background:var(--ink);padding:1.8rem;transition:background 0.2s;opacity:0;transform:translateY(10px)}
-.exp-card.visible{opacity:1;transform:translateY(0)}
-.exp-card:hover{background:var(--ink2)}
-.exp-icon{font-size:1.1rem;margin-bottom:0.8rem;opacity:0.85}
-.exp-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:var(--bright);margin-bottom:0.85rem;letter-spacing:-0.01em}
-.exp-tags{display:flex;flex-wrap:wrap;gap:0.35rem}
-.tag{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.04em;padding:0.2rem 0.55rem;border-radius:4px;background:var(--ink3);border:1px solid var(--rule2);color:var(--muted);transition:all 0.15s;cursor:default}
-.tag:hover{border-color:var(--accent-dim);color:var(--accent);background:var(--accent-faint)}
-
-/* FOCUS */
-.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden}
-.focus-card{background:var(--ink);padding:1.6rem 2rem;display:flex;gap:1.4rem;align-items:flex-start;transition:background 0.2s}
-.focus-card:hover{background:var(--ink2)}
-.focus-index{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--accent);padding-top:0.2rem;flex-shrink:0;opacity:0.6}
-.focus-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;color:var(--bright);margin-bottom:0.4rem;letter-spacing:-0.01em}
-.focus-desc{font-size:0.86rem;color:var(--body);line-height:1.6}
-
-/* CONTACT */
-.contact-wrap{display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center;background:var(--ink2);border:1px solid var(--rule);border-radius:var(--radius);padding:2.5rem}
-.contact-heading{font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--bright);margin-bottom:0.6rem;letter-spacing:-0.01em}
-.contact-sub{font-size:0.93rem;color:var(--body);line-height:1.7;max-width:480px}
-.contact-right{display:flex;flex-direction:column;gap:0.6rem;align-items:stretch;min-width:220px}
-.discord-link{display:flex;align-items:center;gap:0.9rem;padding:1rem 1.4rem;background:rgba(88,101,242,0.07);border:1px solid rgba(88,101,242,0.22);border-radius:var(--radius);text-decoration:none;transition:all 0.2s}
-.discord-link:hover{background:rgba(88,101,242,0.14);border-color:rgba(88,101,242,0.45);transform:translateY(-1px);box-shadow:0 4px 16px rgba(88,101,242,0.12)}
-.discord-lbl{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;color:#7289da;text-transform:uppercase;display:block;margin-bottom:0.12rem}
-.discord-handle{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:var(--bright)}
-.copy-btn{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--rule2);border-radius:var(--radius);padding:0.5rem 1rem;cursor:pointer;transition:all 0.2s;width:100%}
-.copy-btn:hover,.copy-btn.copied{color:var(--green);border-color:rgba(0,200,150,0.3);background:var(--green-faint)}
-
-/* FOOTER */
-footer{position:relative;z-index:1;border-top:1px solid var(--rule);padding:1.8rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-.footer-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:0.85rem;color:var(--muted);letter-spacing:0.04em}
-.footer-brand span{color:var(--accent)}
-.footer-nav{display:flex;gap:2rem;list-style:none}
-.footer-nav a{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;color:var(--muted);text-decoration:none;text-transform:uppercase;transition:color 0.15s}
-.footer-nav a:hover{color:var(--text)}
-.footer-copy{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;color:var(--rule2)}
-
-/* SCROLL REVEAL */
-.reveal{opacity:0;transform:translateY(14px);transition:opacity 0.55s ease,transform 0.55s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-
-/* SCROLLBAR */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--ink)}
-::-webkit-scrollbar-thumb{background:var(--rule2);border-radius:99px}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  nav{padding:0 1.5rem}
-  .nav-links{display:none}
-  .nav-pill{display:none}
-  .nav-burger{display:flex}
-  .hero{grid-template-columns:1fr;padding:100px 1.5rem 3rem}
-  .hero-card{display:none}
-  .stats-bar{grid-template-columns:1fr 1fr}
-  .stat-item:nth-child(2){border-right:none}
-  .stat-item{border-bottom:1px solid var(--rule)}
-  .studying-banner{padding:0.85rem 1.5rem}
-  .section{padding:3rem 1.5rem}
-  .position-row{grid-template-columns:1fr;gap:0.5rem}
-  .expertise-grid{grid-template-columns:1fr 1fr}
-  .focus-grid{grid-template-columns:1fr}
-  .contact-wrap{grid-template-columns:1fr}
-  .contact-right{min-width:unset}
-  footer{padding:1.5rem}
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: default;
 }
-@media(max-width:560px){
-  .expertise-grid{grid-template-columns:1fr}
-  .stats-bar{grid-template-columns:1fr 1fr}
+
+/* ── TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* ── PROGRESS LINE ── */
+#prog {
+  position: fixed;
+  top: 0; left: 0;
+  height: 1px;
+  background: var(--gold);
+  width: 0;
+  z-index: 500;
+  transition: width 0.08s linear;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 400;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3.5rem;
+  background: rgba(10,10,10,0.97);
+  border-bottom: 1px solid var(--rule);
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.nav-logo em { color: var(--gold); font-style: normal; }
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  list-style: none;
+}
+.nav-center a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-center a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.nav-center a:hover { color: var(--sub); }
+.nav-center a.active { color: var(--light); }
+.nav-center a.active::after { transform: scaleX(1); }
+
+.nav-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--green);
+  text-transform: uppercase;
+}
+.status-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2.8s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
+
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.nav-burger span {
+  display: block;
+  width: 20px; height: 1px;
+  background: var(--mid);
+  transition: all 0.25s;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.mob-nav {
+  display: none;
+  position: fixed;
+  top: 56px; left: 0; right: 0;
+  background: rgba(10,10,10,0.99);
+  border-bottom: 1px solid var(--rule);
+  padding: 1.5rem 2rem;
+  flex-direction: column;
+  z-index: 399;
+}
+.mob-nav.open { display: flex; }
+.mob-nav a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--mid);
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+  transition: color 0.2s;
+}
+.mob-nav a:last-child { border-bottom: none; }
+.mob-nav a:hover { color: var(--gold); }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  align-items: center;
+  gap: 6rem;
+  padding: 120px 3.5rem 80px;
+  max-width: 1340px;
+  margin: 0 auto;
+}
+
+/* large decorative background text */
+.hero::before {
+  content: 'DFIR';
+  position: absolute;
+  bottom: 8%;
+  right: -2%;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(8rem, 18vw, 18rem);
+  font-weight: 300;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--rule);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+.hero-left { position: relative; z-index: 1; }
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 2.2rem;
+}
+.tag-line { width: 28px; height: 1px; background: var(--gold); }
+.tag-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.hero-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(3.8rem, 7vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+.hero-name span {
+  display: block;
+  color: var(--dim2);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 0.7em;
+  letter-spacing: 0.04em;
+}
+
+.hero-rule {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin: 2rem 0;
+}
+
+.hero-typed-wrap {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--dim);
+  letter-spacing: 0.06em;
+  margin-bottom: 2rem;
+  min-height: 1.4em;
+}
+#typed {
+  color: var(--sub);
+  border-right: 1.5px solid var(--gold);
+  padding-right: 3px;
+}
+
+.hero-bio {
+  font-size: 1.05rem;
+  color: var(--mid);
+  line-height: 1.85;
+  max-width: 520px;
+  margin-bottom: 3rem;
+  font-weight: 300;
+}
+.hero-bio strong { color: var(--light); font-weight: 500; }
+
+.hero-btns { display: flex; gap: 1rem; }
+
+.btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.85rem 2rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: inline-block;
+}
+.btn-primary {
+  background: var(--gold);
+  color: var(--black);
+  font-weight: 700;
+}
+.btn-primary:hover {
+  background: var(--gold2);
+  box-shadow: 0 0 32px rgba(200,169,110,0.2);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--dim);
+  border: 1px solid var(--rule2);
+}
+.btn-outline:hover { border-color: var(--dim2); color: var(--sub); }
+
+/* ── HERO PANEL (right) ── */
+.hero-panel {
+  position: relative;
+  z-index: 1;
+  background: var(--black2);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 1rem 1.4rem;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--black3);
+}
+.panel-filename {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+.panel-dots { display: flex; gap: 0.4rem; }
+.panel-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--rule2);
+}
+
+.panel-body {
+  padding: 1.5rem 1.6rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  line-height: 2;
+}
+.pl { display: block; }
+.pk { color: var(--gold); }
+.pv { color: var(--sub); }
+.pn { color: var(--dim); }
+.pb { color: var(--dim2); }
+.pc { color: var(--dim2); font-style: italic; }
+.pi { padding-left: 1.2rem; }
+.pcursor {
+  display: inline-block;
+  width: 6px; height: 12px;
+  background: var(--gold);
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.panel-footer {
+  padding: 0.75rem 1.4rem;
+  border-top: 1px solid var(--rule);
+  background: var(--black3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.panel-footer span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.1em;
+  color: var(--dim2);
+  text-transform: uppercase;
+}
+.panel-footer .active-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--green);
+}
+.panel-footer .active-indicator::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--rule); position: relative; z-index: 1; }
+
+/* ── STATS ── */
+.stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--rule);
+}
+.stat {
+  padding: 2.2rem 2rem;
+  text-align: center;
+  border-right: 1px solid var(--rule);
+  transition: background 0.2s;
+}
+.stat:last-child { border-right: none; }
+.stat:hover { background: var(--black2); }
+.stat-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 3rem;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+.stat-n em { color: var(--gold); font-style: normal; font-size: 0.7em; }
+.stat-l {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+/* ── STUDYING BANNER ── */
+.studying {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.85rem 3.5rem;
+  background: var(--black2);
+  border-bottom: 1px solid var(--rule);
+}
+.studying-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  color: var(--purple);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.studying-sep { width: 1px; height: 12px; background: var(--rule2); flex-shrink: 0; }
+.studying-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.s-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  padding: 0.16rem 0.65rem;
+  border: 1px solid rgba(136,120,184,0.2);
+  color: var(--purple);
+  background: var(--purple-f);
+}
+
+/* ── SECTION SHELL ── */
+.section {
+  position: relative;
+  z-index: 1;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 5rem 3.5rem;
+}
+
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1.2rem;
+}
+.sec-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.sec-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.7rem;
+  color: var(--white);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[id] { scroll-margin-top: 72px; }
+
+/* ── POSITIONS ── */
+.pos-list { display: flex; flex-direction: column; }
+.pos-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  align-items: start;
+  gap: 3rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  transition: background 0.15s;
+}
+.pos-row:first-child { border-top: 1px solid var(--rule); }
+.pos-row::before {
+  content: '';
+  position: absolute;
+  left: -3.5rem; top: 0; bottom: 0;
+  width: 1px;
+  background: transparent;
+  transition: background 0.2s;
+}
+.pos-row:hover::before { background: var(--gold); }
+.pos-row:hover { background: rgba(200,169,110,0.02); }
+.p-org {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: var(--dim);
+  text-transform: uppercase;
+  padding-top: 0.3rem;
+}
+.p-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+.p-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.72; }
+.p-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.12em;
+  padding: 0.22rem 0.7rem;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  border: 1px solid rgba(90,154,106,0.25);
+  color: var(--green);
+  background: var(--green-f);
+}
+
+/* ── EXPERTISE ── */
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+.exp-card {
+  padding: 2rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--black);
+  transition: background 0.2s;
+  opacity: 0;
+  transform: translateY(6px);
+}
+.exp-card.visible { opacity: 1; transform: translateY(0); }
+.exp-card:hover { background: var(--black2); }
+.exp-icon {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+  display: block;
+}
+.exp-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--light);
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.exp-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.e-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--rule);
+  color: var(--dim);
+  transition: all 0.15s;
+  cursor: default;
+}
+.e-tag:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-f); }
+
+/* ── FOCUS ── */
+.focus-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+.focus-card {
+  padding: 2rem 2.2rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  transition: background 0.2s;
+}
+.focus-card:hover { background: var(--black2); }
+.f-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--rule2);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: -0.2rem;
+  user-select: none;
+}
+.f-title {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 500;
+  font-size: 0.88rem;
+  color: var(--light);
+  margin-bottom: 0.45rem;
+  letter-spacing: 0.01em;
+}
+.f-desc { font-size: 0.85rem; color: var(--mid); line-height: 1.7; }
+
+/* ── CONTACT ── */
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--rule);
+}
+.contact-left {
+  padding: 3rem;
+  border-right: 1px solid var(--rule);
+}
+.c-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--white);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.c-sub { font-size: 0.9rem; color: var(--mid); line-height: 1.8; }
+.contact-right-pane {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.8rem;
+  background: var(--black2);
+}
+
+.discord-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid rgba(88,101,242,0.2);
+  background: rgba(88,101,242,0.04);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.discord-btn:hover {
+  border-color: rgba(88,101,242,0.4);
+  background: rgba(88,101,242,0.08);
+  transform: translateX(2px);
+}
+.d-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: #5865f2;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.1rem;
+  opacity: 0.7;
+}
+.d-handle {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.copy-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.copy-btn:hover, .copy-btn.copied {
+  color: var(--green);
+  border-color: rgba(90,154,106,0.3);
+  background: var(--green-f);
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.f-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--dim2);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.f-brand em { color: var(--gold); font-style: normal; }
+.f-links { display: flex; gap: 2.2rem; list-style: none; }
+.f-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--dim2);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.f-links a:hover { color: var(--dim); }
+.f-copy {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.54rem;
+  letter-spacing: 0.1em;
+  color: var(--dim2);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.a1 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.1s; }
+.a2 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.22s; }
+.a3 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.34s; }
+.a4 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.46s; }
+.a5 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.58s; }
+.a6 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.7s; }
+
+.reveal { opacity: 0; transform: translateY(10px); transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--rule2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding: 110px 2rem 3rem; }
+  .hero::before { display: none; }
+  .hero-panel { display: none; }
+  .exp-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  nav { padding: 0 1.5rem; }
+  .nav-center { display: none; }
+  .nav-status { display: none; }
+  .nav-burger { display: flex; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat:nth-child(2) { border-right: none; }
+  .stat { border-bottom: 1px solid var(--rule); }
+  .studying { padding: 0.85rem 1.5rem; }
+  .section { padding: 3.5rem 1.5rem; }
+  .pos-row { grid-template-columns: 1fr; gap: 0.5rem; }
+  .pos-row::before { display: none; }
+  .focus-grid { grid-template-columns: 1fr; }
+  .contact-inner { grid-template-columns: 1fr; }
+  .contact-left { border-right: none; border-bottom: 1px solid var(--rule); }
+  footer { padding: 1.5rem; }
+}
+@media (max-width: 640px) {
+  .exp-grid { grid-template-columns: 1fr; }
+  .hero-name { font-size: 3.2rem; }
 }
 </style>
 </head>
 <body>
 
-<div id="progress"></div>
+<div id="prog"></div>
 
+<!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Acoustic<span>Void</span></a>
-  <ul class="nav-links" id="navLinks">
-    <li><a href="#positions" data-section="positions">Positions</a></li>
-    <li><a href="#expertise" data-section="expertise">Expertise</a></li>
-    <li><a href="#focus" data-section="focus">Focus</a></li>
-    <li><a href="#contact" data-section="contact">Contact</a></li>
+  <a href="#" class="nav-logo">Acoustic<em>Void</em></a>
+  <ul class="nav-center" id="navLinks">
+    <li><a href="#positions" data-s="positions">Positions</a></li>
+    <li><a href="#expertise" data-s="expertise">Expertise</a></li>
+    <li><a href="#focus" data-s="focus">Focus</a></li>
+    <li><a href="#contact" data-s="contact">Contact</a></li>
   </ul>
-  <div class="nav-right">
-    <div class="nav-pill">Available for enquiries</div>
-    <button class="nav-burger" id="burger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    Available for Enquiries
   </div>
+  <button class="nav-burger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<div class="mobile-nav" id="mobileNav">
-  <a href="#positions" onclick="closeMenu()">Positions</a>
-  <a href="#expertise" onclick="closeMenu()">Expertise</a>
-  <a href="#focus" onclick="closeMenu()">Focus</a>
-  <a href="#contact" onclick="closeMenu()">Contact</a>
+<div class="mob-nav" id="mobNav">
+  <a href="#positions" onclick="closeMob()">Positions</a>
+  <a href="#expertise" onclick="closeMob()">Expertise</a>
+  <a href="#focus" onclick="closeMob()">Focus</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
 </div>
 
+<!-- HERO -->
 <section class="hero">
   <div class="hero-left">
-    <div class="hero-eyebrow load-1">
-      <div class="eyebrow-line"></div>
-      <span class="eyebrow-text">Digital Forensics Investigator</span>
+    <div class="hero-tag a1">
+      <div class="tag-line"></div>
+      <span class="tag-text">Digital Forensics Investigator</span>
     </div>
-    <h1 class="hero-name load-2">Acoustic<span class="dim">Void</span></h1>
-    <div class="hero-typed load-3" id="typed"></div>
-    <p class="hero-bio load-4">
+
+    <h1 class="hero-name a2">
+      Acoustic
+      <span>Void</span>
+    </h1>
+
+    <div class="hero-rule a3"></div>
+
+    <div class="hero-typed-wrap a3">
+      <span id="typed"></span>
+    </div>
+
+    <p class="hero-bio a4">
       Specialising in <strong>Windows forensic artifact analysis</strong>, live system investigation,
       and the detection of cheat execution methods and anti-forensic behaviour.
       3+ years of operational experience, expanding into <strong>DFIR and incident investigation</strong>.
     </p>
-    <div class="hero-actions load-5">
+
+    <div class="hero-btns a5">
       <a href="#positions" class="btn btn-primary">View Positions</a>
-      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
     </div>
   </div>
 
-  <div class="hero-card load-6">
-    <div class="card-header">
-      <div class="card-dot cd-r"></div>
-      <div class="card-dot cd-y"></div>
-      <div class="card-dot cd-g"></div>
-      <span class="card-title">profile.json</span>
+  <div class="hero-panel a6">
+    <div class="panel-header">
+      <div class="panel-dots">
+        <div class="panel-dot"></div>
+        <div class="panel-dot"></div>
+        <div class="panel-dot"></div>
+      </div>
+      <span class="panel-filename">profile.json</span>
     </div>
-    <div class="card-body">
-      <span class="cl c-bracket">{</span>
-      <span class="cl c-indent"><span class="c-key">"handle"</span>: <span class="c-str">"AcousticVoid"</span>,</span>
-      <span class="cl c-indent"><span class="c-key">"field"</span>: <span class="c-str">"Digital Forensics"</span>,</span>
-      <span class="cl c-indent"><span class="c-key">"experience"</span>: <span class="c-str">"3+ years"</span>,</span>
-      <span class="cl c-indent"><span class="c-key">"positions"</span>: <span class="c-num">5</span>,</span>
-      <span class="cl c-indent"><span class="c-key">"specialisms"</span>: [</span>
-      <span class="cl" style="padding-left:2.4rem"><span class="c-str">"Artifact Analysis"</span>,</span>
-      <span class="cl" style="padding-left:2.4rem"><span class="c-str">"Anti-Cheat Investigation"</span>,</span>
-      <span class="cl" style="padding-left:2.4rem"><span class="c-str">"Anti-Forensic Detection"</span>,</span>
-      <span class="cl" style="padding-left:2.4rem"><span class="c-str">"DFIR"</span></span>
-      <span class="cl c-indent">],</span>
-      <span class="cl c-indent"><span class="c-key">"status"</span>: <span class="c-str">"active"</span></span>
-      <span class="cl c-bracket">}</span>
-      <span class="cl">&nbsp;</span>
-      <span class="cl"><span class="c-comment">// continuously studying</span></span>
-      <span class="cl"><span class="c-comment">// system internals &amp; DFIR</span></span>
-      <span class="cl"><span class="c-cursor"></span></span>
+    <div class="panel-body">
+      <span class="pl pb">{</span>
+      <span class="pl pi"><span class="pk">"handle"</span><span class="pn">:</span> <span class="pv">"AcousticVoid"</span><span class="pn">,</span></span>
+      <span class="pl pi"><span class="pk">"field"</span><span class="pn">:</span> <span class="pv">"Digital Forensics"</span><span class="pn">,</span></span>
+      <span class="pl pi"><span class="pk">"experience"</span><span class="pn">:</span> <span class="pv">"3+ years"</span><span class="pn">,</span></span>
+      <span class="pl pi"><span class="pk">"positions"</span><span class="pn">:</span> <span class="pn">5</span><span class="pn">,</span></span>
+      <span class="pl pi"><span class="pk">"specialisms"</span><span class="pn">:</span> <span class="pb">[</span></span>
+      <span class="pl" style="padding-left:2.4rem"><span class="pv">"Artifact Analysis"</span><span class="pn">,</span></span>
+      <span class="pl" style="padding-left:2.4rem"><span class="pv">"Anti-Cheat Investigation"</span><span class="pn">,</span></span>
+      <span class="pl" style="padding-left:2.4rem"><span class="pv">"Anti-Forensic Detection"</span><span class="pn">,</span></span>
+      <span class="pl" style="padding-left:2.4rem"><span class="pv">"DFIR"</span></span>
+      <span class="pl pi"><span class="pb">]</span><span class="pn">,</span></span>
+      <span class="pl pi"><span class="pk">"status"</span><span class="pn">:</span> <span class="pv">"active"</span></span>
+      <span class="pl pb">}</span>
+      <span class="pl">&nbsp;</span>
+      <span class="pl"><span class="pc">// continuously studying</span></span>
+      <span class="pl"><span class="pc">// system internals &amp; DFIR</span></span>
+      <span class="pl"><span class="pcursor"></span></span>
+    </div>
+    <div class="panel-footer">
+      <span>UTF-8 · JSON</span>
+      <span class="active-indicator">Status: Active</span>
     </div>
   </div>
 </section>
 
-<div class="full-divider"></div>
+<div class="divider"></div>
 
-<div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-val">3<span>+</span></div>
-    <div class="stat-lbl">Years in Field</div>
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-n">3<em>+</em></div>
+    <div class="stat-l">Years in Field</div>
   </div>
-  <div class="stat-item">
-    <div class="stat-val">5<span>+</span></div>
-    <div class="stat-lbl">Active Positions</div>
+  <div class="stat">
+    <div class="stat-n">5<em>+</em></div>
+    <div class="stat-l">Active Positions</div>
   </div>
-  <div class="stat-item">
-    <div class="stat-val">∞</div>
-    <div class="stat-lbl">Artifacts Analysed</div>
+  <div class="stat">
+    <div class="stat-n">∞</div>
+    <div class="stat-l">Artifacts Analysed</div>
   </div>
-  <div class="stat-item">
-    <div class="stat-val">0</div>
-    <div class="stat-lbl">Cases Unsolved</div>
+  <div class="stat">
+    <div class="stat-n">0</div>
+    <div class="stat-l">Cases Unsolved</div>
   </div>
 </div>
 
-<div class="studying-banner">
-  <span class="studying-label">Currently Studying</span>
-  <div class="studying-items">
-    <span class="studying-tag">CompTIA Security+</span>
-    <span class="studying-tag">Memory Forensics</span>
-    <span class="studying-tag">DFIR Methodology</span>
-    <span class="studying-tag">System Internals</span>
-    <span class="studying-tag">Cyber Security</span>
+<!-- STUDYING -->
+<div class="studying">
+  <span class="studying-lbl">Currently Studying</span>
+  <div class="studying-sep"></div>
+  <div class="studying-tags">
+    <span class="s-tag">CompTIA Security+</span>
+    <span class="s-tag">Memory Forensics</span>
+    <span class="s-tag">DFIR Methodology</span>
+    <span class="s-tag">System Internals</span>
+    <span class="s-tag">Cyber Security</span>
   </div>
 </div>
 
-<div class="full-divider"></div>
+<div class="divider"></div>
 
+<!-- POSITIONS -->
 <div class="section" id="positions">
-  <div class="section-label reveal">
-    <span class="label-num">01</span>
-    <h2 class="label-title">Current Positions</h2>
-    <div class="label-line"></div>
+  <div class="sec-head reveal">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">Current Positions</h2>
   </div>
-  <div class="positions reveal">
-    <div class="position-row">
-      <div class="pos-org">Detect.ac</div>
+  <div class="pos-list reveal">
+    <div class="pos-row">
+      <div class="p-org">Detect.ac</div>
       <div>
-        <div class="pos-title">PC Checker</div>
-        <p class="pos-desc">Conducting live system reviews to identify cheat software, suspicious artifacts, and anti-forensic modifications. Applying digital forensics methodology to real-time investigations against players suspected of using unauthorised software.</p>
+        <div class="p-title">PC Checker</div>
+        <p class="p-desc">Conducting live system reviews to identify cheat software, suspicious artifacts, and anti-forensic modifications. Applying digital forensics methodology to real-time investigations against players suspected of using unauthorised software.</p>
       </div>
-      <span class="pos-badge badge-active">● Active</span>
+      <span class="p-badge">● Active</span>
     </div>
-    <div class="position-row">
-      <div class="pos-org">Screenshare Community</div>
+    <div class="pos-row">
+      <div class="p-org">Screenshare Community</div>
       <div>
-        <div class="pos-title">Lead Screensharer</div>
-        <p class="pos-desc">Leading front-line screenshare investigations, setting investigation standards, and ensuring methodological consistency across review sessions. First responder for escalated or complex cases.</p>
+        <div class="p-title">Lead Screensharer</div>
+        <p class="p-desc">Leading front-line screenshare investigations, setting investigation standards, and ensuring methodological consistency across review sessions. First responder for escalated or complex cases.</p>
       </div>
-      <span class="pos-badge badge-active">● Active</span>
+      <span class="p-badge">● Active</span>
     </div>
-    <div class="position-row">
-      <div class="pos-org">Screenshare Community</div>
+    <div class="pos-row">
+      <div class="p-org">Screenshare Community</div>
       <div>
-        <div class="pos-title">Staff Supervisor</div>
-        <p class="pos-desc">Overseeing staff operations, conducting investigator training sessions, and maintaining quality standards across the team. Developing investigation protocols and mentoring junior screensharers in forensic technique.</p>
+        <div class="p-title">Staff Supervisor</div>
+        <p class="p-desc">Overseeing staff operations, conducting investigator training sessions, and maintaining quality standards across the team. Developing investigation protocols and mentoring junior screensharers in forensic technique.</p>
       </div>
-      <span class="pos-badge badge-active">● Active</span>
+      <span class="p-badge">● Active</span>
     </div>
   </div>
 </div>
 
-<div class="full-divider"></div>
+<div class="divider"></div>
 
+<!-- EXPERTISE -->
 <div class="section" id="expertise">
-  <div class="section-label reveal">
-    <span class="label-num">02</span>
-    <h2 class="label-title">Expertise Stack</h2>
-    <div class="label-line"></div>
+  <div class="sec-head reveal">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">Expertise Stack</h2>
   </div>
-  <div class="expertise-grid" id="expGrid">
+  <div class="exp-grid" id="expGrid">
     <div class="exp-card">
-      <div class="exp-icon">🪟</div>
+      <span class="exp-icon">▪</span>
       <div class="exp-name">Windows Forensics</div>
       <div class="exp-tags">
-        <span class="tag">Registry Hives</span><span class="tag">Prefetch</span><span class="tag">Amcache</span>
-        <span class="tag">Shimcache</span><span class="tag">Shellbags</span><span class="tag">LNK Files</span>
-        <span class="tag">JumpLists</span><span class="tag">MFT Analysis</span>
+        <span class="e-tag">Registry Hives</span><span class="e-tag">Prefetch</span><span class="e-tag">Amcache</span>
+        <span class="e-tag">Shimcache</span><span class="e-tag">Shellbags</span><span class="e-tag">LNK Files</span>
+        <span class="e-tag">JumpLists</span><span class="e-tag">MFT Analysis</span>
       </div>
     </div>
     <div class="exp-card">
-      <div class="exp-icon">🔎</div>
+      <span class="exp-icon">▪</span>
       <div class="exp-name">Artifact Analysis</div>
       <div class="exp-tags">
-        <span class="tag">Event Logs</span><span class="tag">USN Journal</span><span class="tag">SRUM</span>
-        <span class="tag">BAM / DAM</span><span class="tag">Timeline Analysis</span><span class="tag">File Metadata</span>
+        <span class="e-tag">Event Logs</span><span class="e-tag">USN Journal</span><span class="e-tag">SRUM</span>
+        <span class="e-tag">BAM / DAM</span><span class="e-tag">Timeline Analysis</span><span class="e-tag">File Metadata</span>
       </div>
     </div>
     <div class="exp-card">
-      <div class="exp-icon">🛡️</div>
+      <span class="exp-icon">▪</span>
       <div class="exp-name">Anti-Forensics Detection</div>
       <div class="exp-tags">
-        <span class="tag">Evidence Wiping</span><span class="tag">Timestamp Manipulation</span>
-        <span class="tag">Log Clearing</span><span class="tag">Artifact Removal</span><span class="tag">Obfuscation</span>
+        <span class="e-tag">Evidence Wiping</span><span class="e-tag">Timestamp Manipulation</span>
+        <span class="e-tag">Log Clearing</span><span class="e-tag">Artifact Removal</span><span class="e-tag">Obfuscation</span>
       </div>
     </div>
     <div class="exp-card">
-      <div class="exp-icon">🎮</div>
+      <span class="exp-icon">▪</span>
       <div class="exp-name">Anti-Cheat Investigation</div>
       <div class="exp-tags">
-        <span class="tag">Cheat Identification</span><span class="tag">Execution Methods</span>
-        <span class="tag">Injection Techniques</span><span class="tag">Ghost Cheats</span><span class="tag">SS Evasion</span>
+        <span class="e-tag">Cheat Identification</span><span class="e-tag">Execution Methods</span>
+        <span class="e-tag">Injection Techniques</span><span class="e-tag">Ghost Cheats</span><span class="e-tag">SS Evasion</span>
       </div>
     </div>
     <div class="exp-card">
-      <div class="exp-icon">🛠️</div>
+      <span class="exp-icon">▪</span>
       <div class="exp-name">Forensic Tooling</div>
       <div class="exp-tags">
-        <span class="tag">FTK Imager</span><span class="tag">Autopsy</span><span class="tag">RegRipper</span>
-        <span class="tag">Volatility</span><span class="tag">Process Monitor</span><span class="tag">Sysinternals</span>
+        <span class="e-tag">FTK Imager</span><span class="e-tag">Autopsy</span><span class="e-tag">RegRipper</span>
+        <span class="e-tag">Volatility</span><span class="e-tag">Process Monitor</span><span class="e-tag">Sysinternals</span>
       </div>
     </div>
     <div class="exp-card">
-      <div class="exp-icon">👥</div>
+      <span class="exp-icon">▪</span>
       <div class="exp-name">Leadership & Training</div>
       <div class="exp-tags">
-        <span class="tag">Live System Review</span><span class="tag">Case Documentation</span>
-        <span class="tag">Staff Training</span><span class="tag">Protocol Development</span><span class="tag">IR</span>
+        <span class="e-tag">Live System Review</span><span class="e-tag">Case Documentation</span>
+        <span class="e-tag">Staff Training</span><span class="e-tag">Protocol Development</span><span class="e-tag">IR</span>
       </div>
     </div>
   </div>
 </div>
 
-<div class="full-divider"></div>
+<div class="divider"></div>
 
+<!-- FOCUS -->
 <div class="section" id="focus">
-  <div class="section-label reveal">
-    <span class="label-num">03</span>
-    <h2 class="label-title">Areas of Focus</h2>
-    <div class="label-line"></div>
+  <div class="sec-head reveal">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">Areas of Focus</h2>
   </div>
   <div class="focus-grid reveal">
     <div class="focus-card">
-      <span class="focus-index">01</span>
+      <div class="f-num">01</div>
       <div>
-        <div class="focus-title">Windows Forensic Artifact Analysis</div>
-        <p class="focus-desc">Deep examination of system artifacts including registry hives, prefetch files, event logs, and NTFS structures to reconstruct execution timelines.</p>
+        <div class="f-title">Windows Forensic Artifact Analysis</div>
+        <p class="f-desc">Deep examination of system artifacts including registry hives, prefetch files, event logs, and NTFS structures to reconstruct execution timelines.</p>
       </div>
     </div>
     <div class="focus-card">
-      <span class="focus-index">02</span>
+      <div class="f-num">02</div>
       <div>
-        <div class="focus-title">Cheat Execution Method Identification</div>
-        <p class="focus-desc">Detecting how unauthorised software is deployed, injected, and concealed during live screenshare investigations.</p>
+        <div class="f-title">Cheat Execution Method Identification</div>
+        <p class="f-desc">Detecting how unauthorised software is deployed, injected, and concealed during live screenshare investigations.</p>
       </div>
     </div>
     <div class="focus-card">
-      <span class="focus-index">03</span>
+      <div class="f-num">03</div>
       <div>
-        <div class="focus-title">Anti-Forensic Behaviour Detection</div>
-        <p class="focus-desc">Identifying attempts to tamper with, conceal, or destroy digital evidence during or prior to a live investigation session.</p>
+        <div class="f-title">Anti-Forensic Behaviour Detection</div>
+        <p class="f-desc">Identifying attempts to tamper with, conceal, or destroy digital evidence during or prior to a live investigation session.</p>
       </div>
     </div>
     <div class="focus-card">
-      <span class="focus-index">04</span>
+      <div class="f-num">04</div>
       <div>
-        <div class="focus-title">DFIR & Incident Investigation</div>
-        <p class="focus-desc">Expanding expertise into Digital Forensics and Incident Response — studying memory forensics, system internals, and investigative frameworks.</p>
+        <div class="f-title">DFIR & Incident Investigation</div>
+        <p class="f-desc">Expanding expertise into Digital Forensics and Incident Response — studying memory forensics, system internals, and investigative frameworks.</p>
       </div>
     </div>
     <div class="focus-card">
-      <span class="focus-index">05</span>
+      <div class="f-num">05</div>
       <div>
-        <div class="focus-title">Staff Training & Oversight</div>
-        <p class="focus-desc">Developing structured training programmes for screenshare investigators and standardising methodology across teams.</p>
+        <div class="f-title">Staff Training & Oversight</div>
+        <p class="f-desc">Developing structured training programmes for screenshare investigators and standardising methodology across teams.</p>
       </div>
     </div>
     <div class="focus-card">
-      <span class="focus-index">06</span>
+      <div class="f-num">06</div>
       <div>
-        <div class="focus-title">Continuous Professional Development</div>
-        <p class="focus-desc">Actively studying cybersecurity, DFIR methodologies, forensic tooling, and system internals to expand investigative capability.</p>
+        <div class="f-title">Continuous Professional Development</div>
+        <p class="f-desc">Actively studying cybersecurity, DFIR methodologies, forensic tooling, and system internals to expand investigative capability.</p>
       </div>
     </div>
   </div>
 </div>
 
-<div class="full-divider"></div>
+<div class="divider"></div>
 
+<!-- CONTACT -->
 <div class="section" id="contact">
-  <div class="section-label reveal">
-    <span class="label-num">04</span>
-    <h2 class="label-title">Contact & Enquiries</h2>
-    <div class="label-line"></div>
+  <div class="sec-head reveal">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">Contact & Enquiries</h2>
   </div>
-  <div class="contact-wrap reveal">
-    <div>
-      <h3 class="contact-heading">Available for Enquiries</h3>
-      <p class="contact-sub">Whether you're looking to bring on an experienced PC checker, need an investigator for your community, or want to discuss digital forensics and anti-cheat methodology — reach out directly on Discord.</p>
+  <div class="contact-inner reveal">
+    <div class="contact-left">
+      <h3 class="c-heading">Available for<br>Enquiries</h3>
+      <p class="c-sub">Whether you're looking to bring on an experienced PC checker, need an investigator for your community, or want to discuss digital forensics and anti-cheat methodology — reach out directly on Discord.</p>
     </div>
-    <div class="contact-right">
-      <a href="https://discord.com/users/piespeas" target="_blank" rel="noopener noreferrer" class="discord-link">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#7289da" style="flex-shrink:0">
+    <div class="contact-right-pane">
+      <a href="https://discord.com/users/piespeas" target="_blank" rel="noopener noreferrer" class="discord-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865f2" style="flex-shrink:0;opacity:0.8">
           <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.055a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
         </svg>
         <div>
-          <span class="discord-lbl">Discord — Click to open</span>
-          <span class="discord-handle">piespeas</span>
+          <span class="d-lbl">Discord — Click to open</span>
+          <span class="d-handle">piespeas</span>
         </div>
       </a>
-      <button class="copy-btn" id="copyBtn" onclick="copyDiscord()">
-        <span id="copyLabel">Copy username</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyHandle()">
+        <span id="copyLbl">Copy username</span>
       </button>
     </div>
   </div>
 </div>
 
+<!-- FOOTER -->
 <footer>
-  <div class="footer-brand">Acoustic<span>Void</span></div>
-  <ul class="footer-nav">
+  <div class="f-brand">Acoustic<em>Void</em></div>
+  <ul class="f-links">
     <li><a href="#positions">Positions</a></li>
     <li><a href="#expertise">Expertise</a></li>
     <li><a href="#focus">Focus</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="footer-copy">DFIR · PC INVESTIGATION · ANTI-CHEAT</div>
+  <div class="f-copy">DFIR · PC Investigation · Anti-Cheat</div>
 </footer>
 
 <script>
-  // ── Scroll progress bar
-  const bar = document.getElementById('progress');
-  window.addEventListener('scroll', () => {
-    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-    bar.style.width = pct + '%';
-  }, {passive: true});
+// Progress bar
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  prog.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+}, { passive: true });
 
-  // ── Scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+// Scroll reveal
+const ro = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.07 });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 
-  // ── Staggered expertise cards
-  const cards = document.querySelectorAll('.exp-card');
-  const cardObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const idx = Array.from(cards).indexOf(e.target);
-        setTimeout(() => {
-          e.target.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          e.target.classList.add('visible');
-        }, idx * 80);
-        cardObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.05 });
-  cards.forEach(c => cardObs.observe(c));
-
-  // ── Active nav link on scroll
-  const sections = ['positions','expertise','focus','contact'];
-  const navLinks = document.querySelectorAll('.nav-links a[data-section]');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - 100) current = id;
-    });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.dataset.section === current);
-    });
-  }, {passive: true});
-
-  // ── Typing effect
-  const phrases = [
-    'PC Checker / DFIR Analyst / Anti-Cheat Investigator',
-    'Windows Forensics / Artifact Analysis / Live Investigation',
-    'Lead Screensharer / Staff Supervisor / Detect.ac'
-  ];
-  let pi = 0, ci = 0, del = false;
-  const typed = document.getElementById('typed');
-  function tick() {
-    const cur = phrases[pi];
-    typed.textContent = del ? cur.slice(0, --ci) : cur.slice(0, ++ci);
-    if (!del && ci === cur.length) { del = true; setTimeout(tick, 2000); return; }
-    if (del && ci === 0) { del = false; pi = (pi + 1) % phrases.length; }
-    setTimeout(tick, del ? 28 : 50);
-  }
-  setTimeout(tick, 900);
-  setInterval(() => {
-    typed.style.borderRightColor = typed.style.borderRightColor === 'transparent' ? 'var(--accent)' : 'transparent';
-  }, 500);
-
-  // ── Mobile nav
-  const burger = document.getElementById('burger');
-  const mobileNav = document.getElementById('mobileNav');
-  burger.addEventListener('click', () => {
-    burger.classList.toggle('open');
-    mobileNav.classList.toggle('open');
+// Staggered expertise cards
+const ecards = document.querySelectorAll('.exp-card');
+const co = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = Array.from(ecards).indexOf(e.target);
+      setTimeout(() => {
+        e.target.style.transition = `opacity 0.5s cubic-bezier(.22,1,.36,1) ${i*0.06}s, transform 0.5s cubic-bezier(.22,1,.36,1) ${i*0.06}s`;
+        e.target.classList.add('visible');
+      }, 0);
+      co.unobserve(e.target);
+    }
   });
-  function closeMenu() {
-    burger.classList.remove('open');
-    mobileNav.classList.remove('open');
-  }
-  document.addEventListener('click', e => {
-    if (!burger.contains(e.target) && !mobileNav.contains(e.target)) closeMenu();
-  });
+}, { threshold: 0.05 });
+ecards.forEach(c => co.observe(c));
 
-  // ── Copy Discord
-  function copyDiscord() {
-    navigator.clipboard.writeText('piespeas').then(() => {
-      const btn = document.getElementById('copyBtn');
-      const lbl = document.getElementById('copyLabel');
-      btn.classList.add('copied');
-      lbl.textContent = '✓ Copied to clipboard';
-      setTimeout(() => { btn.classList.remove('copied'); lbl.textContent = 'Copy username'; }, 2200);
-    });
-  }
+// Active nav
+const secs = ['positions','expertise','focus','contact'];
+const nls = document.querySelectorAll('.nav-center a[data-s]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  secs.forEach(id => { const el = document.getElementById(id); if (el && window.scrollY >= el.offsetTop - 100) cur = id; });
+  nls.forEach(a => a.classList.toggle('active', a.dataset.s === cur));
+}, { passive: true });
+
+// Typing
+const phrases = [
+  'PC Checker / DFIR Analyst / Anti-Cheat Investigator',
+  'Windows Forensics / Artifact Analysis / Live Investigation',
+  'Lead Screensharer / Staff Supervisor / Detect.ac'
+];
+let pi = 0, ci = 0, del = false;
+const typed = document.getElementById('typed');
+function tick() {
+  const cur = phrases[pi];
+  typed.textContent = del ? cur.slice(0, --ci) : cur.slice(0, ++ci);
+  if (!del && ci === cur.length) { del = true; setTimeout(tick, 2400); return; }
+  if (del && ci === 0) { del = false; pi = (pi + 1) % phrases.length; }
+  setTimeout(tick, del ? 24 : 54);
+}
+setTimeout(tick, 1000);
+setInterval(() => {
+  typed.style.borderRightColor = typed.style.borderRightColor === 'transparent' ? 'var(--gold)' : 'transparent';
+}, 520);
+
+// Mobile nav
+const burger = document.getElementById('burger');
+const mobNav = document.getElementById('mobNav');
+burger.addEventListener('click', () => { burger.classList.toggle('open'); mobNav.classList.toggle('open'); });
+function closeMob() { burger.classList.remove('open'); mobNav.classList.remove('open'); }
+document.addEventListener('click', e => { if (!burger.contains(e.target) && !mobNav.contains(e.target)) closeMob(); });
+
+// Copy
+function copyHandle() {
+  navigator.clipboard.writeText('piespeas').then(() => {
+    const btn = document.getElementById('copyBtn'), lbl = document.getElementById('copyLbl');
+    btn.classList.add('copied'); lbl.textContent = '✓ Copied';
+    setTimeout(() => { btn.classList.remove('copied'); lbl.textContent = 'Copy username'; }, 2200);
+  });
+}
 </script>
 </body>
 </html>
