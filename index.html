@@ -1,1275 +1,484 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AcousticVoid — Digital Forensics & Anti-Cheat Investigator</title>
-<meta name="description" content="Digital forensics investigator specialising in Windows artifact analysis, anti-cheat investigation, and incident response.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="AcousticVoid — Digital Forensics Investigator">
-<meta property="og:description" content="Specialising in Windows forensic artifact analysis, anti-cheat investigation, and DFIR.">
-<meta name="theme-color" content="#0a0a0a">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0a'/><text x='16' y='23' font-family='Georgia,serif' font-size='15' font-weight='bold' fill='%23c8a96e' text-anchor='middle'>AV</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Neue+Haas+Grotesk+Display+Pro:wght@400;500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: auto; font-size: 16px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcousticVoid - Digital Forensics Investigator</title>
+  <meta name="description" content="Digital forensics investigator specializing in Windows artifact analysis, anti-cheat investigation, and incident response.">
+  <meta name="theme-color" content="#0b0e15">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1118;
+      --bg-soft: #131d29;
+      --panel: rgba(22, 32, 46, 0.88);
+      --panel-strong: #121b27;
+      --line: #2b3a4f;
+      --line-bright: #4b6788;
+      --text: #ebf4ff;
+      --muted: #9eb2cb;
+      --gold: #7ad7d0;
+      --green: #98d9b8;
+      --blue: #9bc7ff;
+      --purple: #b5a9ec;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.32);
+      --radius: 16px;
+      --maxw: 1180px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Plus Jakarta Sans", Inter, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(980px 460px at 20% -10%, rgba(122, 215, 208, 0.11), transparent 62%),
+        radial-gradient(860px 420px at 90% 0%, rgba(181, 169, 236, 0.1), transparent 62%),
+        linear-gradient(180deg, #0b1118 0%, #0e1622 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(151, 167, 199, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(151, 167, 199, 0.05) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black 30%, transparent 95%);
+      z-index: -1;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(var(--maxw), calc(100% - 2rem)); margin: 0 auto; }
 
-:root {
-  --black:   #0a0a0a;
-  --black2:  #0f0f0f;
-  --black3:  #141414;
-  --black4:  #1a1a1a;
-  --rule:    #222222;
-  --rule2:   #2e2e2e;
-  --dim3:    #383838;
-  --dim2:    #505050;
-  --dim:     #686868;
-  --mid:     #8a8a8a;
-  --sub:     #aaaaaa;
-  --text:    #cccccc;
-  --light:   #e8e8e8;
-  --white:   #f5f5f0;
-  --gold:    #c8a96e;
-  --gold2:   #e8c98e;
-  --gold-f:  rgba(200,169,110,0.08);
-  --green:   #5a9a6a;
-  --green-f: rgba(90,154,106,0.08);
-  --purple:  #8878b8;
-  --purple-f:rgba(136,120,184,0.08);
-  --r: 0px;
-}
+    .topbar {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(11, 14, 21, 0.83);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      min-height: 64px;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand { font-weight: 700; letter-spacing: 0.04em; }
+    .brand span { color: var(--gold); }
+    .nav-links { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+    .nav-links a {
+      font-size: 0.78rem; color: var(--muted);
+      border: 1px solid transparent; border-radius: 999px;
+      padding: 0.28rem 0.66rem; transition: 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text); border-color: var(--line-bright); background: rgba(147, 184, 255, 0.08);
+    }
+    .status {
+      font-size: 0.7rem; color: var(--green);
+      border: 1px solid rgba(134, 202, 154, 0.4);
+      background: rgba(134, 202, 154, 0.1);
+      border-radius: 999px; padding: 0.24rem 0.62rem;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.38rem;
+    }
+    .status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px rgba(134, 202, 154, 0.55);
+    }
 
-body {
-  background: var(--black);
-  color: var(--text);
-  font-family: 'Barlow', sans-serif;
-  font-weight: 300;
-  line-height: 1.6;
-  overflow-x: hidden;
-  cursor: default;
-}
+    .hero {
+      padding: 4.6rem 0 2.8rem;
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1rem;
+    }
+    .glass {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, var(--panel), rgba(17, 23, 40, 0.82));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .intro { padding: 1.9rem; display: grid; gap: 1rem; position: relative; overflow: hidden; }
+    .intro::after {
+      content: "";
+      position: absolute; right: -120px; top: -80px;
+      width: 260px; height: 260px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(122, 215, 208, 0.16), transparent 70%);
+      pointer-events: none;
+    }
+    .pill {
+      width: fit-content; text-transform: uppercase; letter-spacing: 0.08em;
+      font-size: 0.68rem; color: var(--gold);
+      background: rgba(122, 215, 208, 0.12);
+      border: 1px solid rgba(122, 215, 208, 0.34);
+      padding: 0.26rem 0.64rem; border-radius: 999px;
+    }
+    h1 {
+      font-family: "Manrope", "Plus Jakarta Sans", sans-serif;
+      font-size: clamp(2rem, 5vw, 3.35rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      text-shadow: 0 1px 20px rgba(147, 184, 255, 0.1);
+    }
+    h1 small { display: block; color: var(--muted); font-size: clamp(1.16rem, 2.8vw, 1.64rem); font-weight: 500; }
+    .typed {
+      color: var(--blue); font-size: 0.93rem; min-height: 1.35rem;
+      padding-left: 0.62rem; border-left: 2px solid rgba(147, 184, 255, 0.4);
+    }
+    .intro p { color: var(--muted); max-width: 62ch; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .btn {
+      border: 1px solid var(--line); border-radius: 10px;
+      background: var(--panel-strong); color: var(--text);
+      padding: 0.62rem 1rem; cursor: pointer; font-size: 0.8rem; transition: 0.22s ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-bright);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+    }
+    .btn.primary { background: var(--gold); color: #0e1b20; border-color: rgba(122, 215, 208, 0.56); font-weight: 700; }
 
-/* ── PAGE FADE-IN ── */
-#page-veil {
-  position: fixed;
-  inset: 0;
-  background: var(--black);
-  z-index: 9999;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
+    .terminal { overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+    .term-head, .term-foot {
+      padding: 0.74rem 0.95rem; font-size: 0.73rem; color: var(--muted);
+      background: var(--panel-strong); border-bottom: 1px solid var(--line);
+    }
+    .term-foot { border-bottom: none; border-top: 1px solid var(--line); display: flex; justify-content: space-between; }
+    .code {
+      padding: 1rem; font-family: Consolas, "Courier New", monospace; font-size: 0.78rem;
+      color: #acc8ff; display: grid; gap: 0.28rem;
+    }
+    .k { color: var(--gold); }
+    .v { color: #d6e4ff; }
 
-/* ── TEXTURE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  opacity: 0.022;
-  pointer-events: none;
-  z-index: 1000;
-}
+    .hero-badge {
+      position: absolute;
+      right: 1.1rem;
+      bottom: 1.1rem;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 1px solid rgba(151, 167, 199, 0.38);
+      background: linear-gradient(180deg, rgba(122, 215, 208, 0.16), rgba(17, 23, 40, 0.28));
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      box-shadow: inset 0 0 20px rgba(147, 184, 255, 0.1);
+      pointer-events: none;
+    }
+    .hero-badge svg {
+      width: 38px;
+      height: 38px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.6;
+      opacity: 0.9;
+    }
 
-/* ── PROGRESS LINE ── */
-#prog {
-  position: fixed;
-  top: 0; left: 0;
-  height: 1px;
-  background: var(--gold);
-  width: 0;
-  z-index: 500;
-  transition: width 0.08s linear;
-}
+    .stats { margin: 1rem 0 2.5rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; }
+    .stat { padding: 0.95rem; text-align: center; }
+    .stat b { font-size: 1.65rem; line-height: 1.1; display: block; }
+    .stat span { font-size: 0.73rem; color: var(--muted); }
 
-/* ── NAV ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 400;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 3.5rem;
-  background: rgba(10,10,10,0.97);
-  border-bottom: 1px solid var(--rule);
-}
+    .study {
+      margin-bottom: 2.5rem; padding: 0.9rem; border-radius: var(--radius);
+      border: 1px solid rgba(181, 169, 236, 0.34);
+      background: rgba(181, 169, 236, 0.09);
+      display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center;
+    }
+    .study em { font-style: normal; font-size: 0.7rem; color: var(--purple); letter-spacing: 0.07em; text-transform: uppercase; margin-right: 0.4rem; }
+    .chip {
+      border: 1px solid var(--line); background: rgba(17, 23, 40, 0.85); border-radius: 999px;
+      color: var(--muted); font-size: 0.72rem; padding: 0.23rem 0.54rem;
+    }
 
-.nav-logo {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 500;
-  font-size: 1.15rem;
-  letter-spacing: 0.12em;
-  color: var(--white);
-  text-decoration: none;
-  text-transform: uppercase;
-}
-.nav-logo em { color: var(--gold); font-style: normal; }
+    section { margin-bottom: 2.45rem; }
+    .section-head {
+      margin-bottom: 1.15rem; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+      border-bottom: 1px dashed rgba(151, 167, 199, 0.28); padding-bottom: 0.55rem;
+    }
+    .title {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+    .title svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--blue);
+      fill: none;
+      stroke-width: 1.8;
+      opacity: 0.95;
+    }
+    .section-head h2 { font-size: 1.18rem; letter-spacing: 0.03em; }
+    .section-head span { color: var(--muted); font-size: 0.74rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.72rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.72rem; }
+    .card { padding: 1.08rem; transition: 0.22s ease; }
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-bright);
+      background: rgba(20, 28, 43, 0.97);
+      box-shadow: 0 16px 26px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    .sub { font-size: 0.72rem; color: var(--gold); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 0.32rem; }
+    .card h3 { font-size: 0.95rem; margin-bottom: 0.45rem; }
+    .card p { color: var(--muted); font-size: 0.85rem; }
+    .tags { margin-top: 0.65rem; display: flex; flex-wrap: wrap; gap: 0.34rem; }
+    .tags .chip { font-size: 0.67rem; }
 
-.nav-center {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  list-style: none;
-}
-.nav-center a {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  color: var(--dim);
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 0.2s;
-  position: relative;
-}
-.nav-center a::after {
-  content: '';
-  position: absolute;
-  bottom: -3px; left: 0; right: 0;
-  height: 1px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-.nav-center a:hover { color: var(--sub); }
-.nav-center a.active { color: var(--light); }
-.nav-center a.active::after { transform: scaleX(1); }
+    .contact { display: grid; grid-template-columns: 1fr 1fr; gap: 0.72rem; }
+    .contact .card p { margin-bottom: 0.8rem; }
+    .discord {
+      display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem;
+      color: #d7ecff; background: rgba(122, 215, 208, 0.13);
+      border: 1px solid rgba(122, 215, 208, 0.34);
+      border-radius: 10px; padding: 0.55rem 0.8rem;
+      transition: 0.22s ease;
+    }
+    .discord:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22);
+    }
 
-.nav-status {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  color: var(--green);
-  text-transform: uppercase;
-}
-.status-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: pulse 2.8s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
+    footer {
+      margin: 0.8rem 0 2rem; padding-top: 0.95rem; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem;
+      color: var(--muted); font-size: 0.73rem;
+    }
+    .reveal { opacity: 0; transform: translateY(8px); transition: opacity 0.24s ease, transform 0.24s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
 
-.nav-burger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 4px;
-}
-.nav-burger span {
-  display: block;
-  width: 20px; height: 1px;
-  background: var(--mid);
-  transition: all 0.25s;
-}
-.nav-burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.nav-burger.open span:nth-child(2) { opacity: 0; }
-.nav-burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-.mob-nav {
-  display: none;
-  position: fixed;
-  top: 56px; left: 0; right: 0;
-  background: rgba(10,10,10,0.99);
-  border-bottom: 1px solid var(--rule);
-  padding: 1.5rem 2rem;
-  flex-direction: column;
-  z-index: 399;
-}
-.mob-nav.open { display: flex; }
-.mob-nav a {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  color: var(--mid);
-  text-decoration: none;
-  text-transform: uppercase;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid var(--rule);
-  transition: color 0.2s;
-}
-.mob-nav a:last-child { border-bottom: none; }
-.mob-nav a:hover { color: var(--gold); }
-
-/* ── HERO ── */
-.hero {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  align-items: center;
-  gap: 6rem;
-  padding: 120px 3.5rem 80px;
-  max-width: 1340px;
-  margin: 0 auto;
-}
-
-/* large decorative background text */
-.hero::before {
-  content: 'DFIR';
-  position: absolute;
-  top: 50%;
-  right: -1%;
-  transform: translateY(calc(-50% + var(--parallax, 0px)));
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(7rem, 16vw, 16rem);
-  font-weight: 300;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--rule);
-  letter-spacing: -0.04em;
-  line-height: 1;
-  pointer-events: none;
-  z-index: 0;
-  user-select: none;
-  will-change: transform;
-}
-
-.hero-left { position: relative; z-index: 1; }
-
-.hero-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-bottom: 2.2rem;
-}
-.tag-line { width: 28px; height: 1px; background: var(--gold); }
-.tag-text {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  color: var(--gold);
-  text-transform: uppercase;
-}
-
-.hero-name {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(3.8rem, 7vw, 6.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  color: var(--white);
-  margin-bottom: 0.4rem;
-  text-transform: uppercase;
-}
-.hero-name span {
-  display: block;
-  color: var(--dim2);
-  font-weight: 300;
-  font-style: italic;
-  font-size: 0.7em;
-  letter-spacing: 0.04em;
-}
-
-.hero-rule {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, var(--gold), transparent);
-  margin: 2rem 0;
-}
-
-.hero-typed-wrap {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.76rem;
-  color: var(--dim);
-  letter-spacing: 0.06em;
-  margin-bottom: 2rem;
-  min-height: 1.4em;
-}
-#typed {
-  color: var(--sub);
-  border-right: 1.5px solid var(--gold);
-  padding-right: 3px;
-}
-
-.hero-bio {
-  font-size: 1.05rem;
-  color: var(--mid);
-  line-height: 1.85;
-  max-width: 520px;
-  margin-bottom: 3rem;
-  font-weight: 300;
-}
-.hero-bio strong { color: var(--light); font-weight: 500; }
-
-.hero-btns { display: flex; gap: 1rem; }
-
-.btn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 0.85rem 2rem;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-  display: inline-block;
-}
-.btn-primary {
-  background: var(--gold);
-  color: var(--black);
-  font-weight: 700;
-}
-.btn-primary:hover {
-  background: var(--gold2);
-  box-shadow: 0 0 32px rgba(200,169,110,0.2);
-}
-.btn-outline {
-  background: transparent;
-  color: var(--dim);
-  border: 1px solid var(--rule2);
-}
-.btn-outline:hover { border-color: var(--dim2); color: var(--sub); }
-.btn:active { transform: scale(0.97); }
-
-@keyframes copyPulse {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.04); }
-  70%  { transform: scale(0.98); }
-  100% { transform: scale(1); }
-}
-
-/* ── HERO PANEL (right) ── */
-.hero-panel {
-  position: relative;
-  z-index: 1;
-  background: var(--black2);
-  border: 1px solid var(--rule);
-  overflow: hidden;
-}
-
-.panel-header {
-  padding: 1rem 1.4rem;
-  border-bottom: 1px solid var(--rule);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--black3);
-}
-.panel-filename {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-  color: var(--dim);
-  text-transform: uppercase;
-}
-.panel-dots { display: flex; gap: 0.4rem; }
-.panel-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--rule2);
-}
-
-.panel-body {
-  padding: 1.5rem 1.6rem;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.72rem;
-  line-height: 2;
-}
-.pl { display: block; }
-.pk { color: var(--gold); }
-.pv { color: var(--sub); }
-.pn { color: var(--dim); }
-.pb { color: var(--dim2); }
-.pc { color: var(--dim2); font-style: italic; }
-.pi { padding-left: 1.2rem; }
-.pcursor {
-  display: inline-block;
-  width: 6px; height: 12px;
-  background: var(--gold);
-  vertical-align: middle;
-  animation: blink 1s step-end infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-.panel-footer {
-  padding: 0.75rem 1.4rem;
-  border-top: 1px solid var(--rule);
-  background: var(--black3);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.panel-footer span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.54rem;
-  letter-spacing: 0.1em;
-  color: var(--dim2);
-  text-transform: uppercase;
-}
-.panel-footer .active-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--green);
-}
-.panel-footer .active-indicator::before {
-  content: '';
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--green);
-}
-
-/* ── DIVIDER ── */
-.divider { height: 1px; background: var(--rule); position: relative; z-index: 1; }
-
-/* ── STATS ── */
-.stats {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-bottom: 1px solid var(--rule);
-}
-.stat {
-  padding: 2.2rem 2rem;
-  text-align: center;
-  border-right: 1px solid var(--rule);
-  transition: background 0.2s;
-}
-.stat:last-child { border-right: none; }
-.stat:hover { background: var(--black2); }
-.stat-n {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: 3rem;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 0.35rem;
-  letter-spacing: -0.02em;
-}
-.stat-n em { color: var(--gold); font-style: normal; font-size: 0.7em; }
-.stat-l {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.15em;
-  color: var(--dim);
-  text-transform: uppercase;
-}
-
-/* ── STUDYING BANNER ── */
-.studying {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  padding: 0.85rem 3.5rem;
-  background: var(--black2);
-  border-bottom: 1px solid var(--rule);
-}
-.studying-lbl {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
-  color: var(--purple);
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-.studying-sep { width: 1px; height: 12px; background: var(--rule2); flex-shrink: 0; }
-.studying-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.s-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
-  padding: 0.16rem 0.65rem;
-  border: 1px solid rgba(136,120,184,0.2);
-  color: var(--purple);
-  background: var(--purple-f);
-}
-
-/* ── SECTION SHELL ── */
-.section {
-  position: relative;
-  z-index: 1;
-  max-width: 1340px;
-  margin: 0 auto;
-  padding: 5rem 3.5rem;
-}
-
-.sec-head {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 1.2rem;
-}
-.sec-num {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  color: var(--gold);
-  flex-shrink: 0;
-}
-.sec-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: 1.7rem;
-  color: var(--white);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-[id] { scroll-margin-top: 72px; }
-
-/* ── POSITIONS ── */
-.pos-list { display: flex; flex-direction: column; }
-.pos-row {
-  display: grid;
-  grid-template-columns: 200px 1fr auto;
-  align-items: start;
-  gap: 3rem;
-  padding: 2rem 0;
-  border-bottom: 1px solid var(--rule);
-  position: relative;
-  transition: background 0.2s, transform 0.25s cubic-bezier(.22,1,.36,1);
-}
-.pos-row:first-child { border-top: 1px solid var(--rule); }
-.pos-row::before {
-  content: '';
-  position: absolute;
-  left: -3.5rem; top: 0; bottom: 0;
-  width: 1px;
-  background: transparent;
-  transition: background 0.2s;
-}
-.pos-row:hover::before { background: var(--gold); }
-.pos-row:hover { background: rgba(200,169,110,0.02); transform: translateX(4px); }
-.p-org {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  color: var(--dim);
-  text-transform: uppercase;
-  padding-top: 0.3rem;
-}
-.p-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 500;
-  font-size: 1.2rem;
-  color: var(--white);
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.02em;
-}
-.p-desc { font-size: 0.88rem; color: var(--mid); line-height: 1.72; }
-.p-badge {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.54rem;
-  letter-spacing: 0.12em;
-  padding: 0.22rem 0.7rem;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  border: 1px solid rgba(90,154,106,0.25);
-  color: var(--green);
-  background: var(--green-f);
-}
-
-/* ── EXPERTISE ── */
-.exp-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border-top: 1px solid var(--rule);
-  border-left: 1px solid var(--rule);
-}
-.exp-card {
-  padding: 2rem;
-  border-right: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  background: var(--black);
-  transition: background 0.2s;
-  opacity: 0;
-  transform: translateY(6px);
-}
-.exp-card.visible { opacity: 1; transform: translateY(0); }
-.exp-card:hover { background: var(--black2); box-shadow: inset 0 0 0 1px rgba(200,169,110,0.12), 0 0 24px rgba(200,169,110,0.04); }
-.exp-icon {
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  opacity: 0.6;
-  display: block;
-}
-.exp-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 500;
-  font-size: 1.05rem;
-  color: var(--light);
-  margin-bottom: 1rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-.exp-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.e-tag {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.56rem;
-  letter-spacing: 0.06em;
-  padding: 0.15rem 0.5rem;
-  border: 1px solid var(--rule);
-  color: var(--dim);
-  transition: all 0.15s;
-  cursor: default;
-}
-.e-tag:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-f); }
-
-/* ── FOCUS ── */
-.focus-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--rule);
-  border-left: 1px solid var(--rule);
-}
-.focus-card {
-  padding: 2rem 2.2rem;
-  border-right: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-  transition: background 0.2s;
-}
-.focus-card:hover { background: var(--black2); }
-.f-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.8rem;
-  font-weight: 300;
-  color: var(--rule2);
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: -0.2rem;
-  user-select: none;
-}
-.f-title {
-  font-family: 'Barlow', sans-serif;
-  font-weight: 500;
-  font-size: 0.88rem;
-  color: var(--light);
-  margin-bottom: 0.45rem;
-  letter-spacing: 0.01em;
-}
-.f-desc { font-size: 0.85rem; color: var(--mid); line-height: 1.7; }
-
-/* ── CONTACT ── */
-.contact-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border: 1px solid var(--rule);
-}
-.contact-left {
-  padding: 3rem;
-  border-right: 1px solid var(--rule);
-}
-.c-heading {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: 2rem;
-  color: var(--white);
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.c-sub { font-size: 0.9rem; color: var(--mid); line-height: 1.8; }
-.contact-right-pane {
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.8rem;
-  background: var(--black2);
-}
-
-.discord-btn {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 1.4rem;
-  border: 1px solid rgba(88,101,242,0.2);
-  background: rgba(88,101,242,0.04);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-.discord-btn:hover {
-  border-color: rgba(88,101,242,0.4);
-  background: rgba(88,101,242,0.08);
-  transform: translateX(2px);
-}
-.d-lbl {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: #5865f2;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 0.1rem;
-  opacity: 0.7;
-}
-.d-handle {
-  font-family: 'Barlow', sans-serif;
-  font-weight: 500;
-  font-size: 1rem;
-  color: var(--white);
-}
-
-.copy-btn {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--dim);
-  background: transparent;
-  border: 1px solid var(--rule);
-  padding: 0.7rem 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-}
-.copy-btn:hover, .copy-btn.copied {
-  color: var(--green);
-  border-color: rgba(90,154,106,0.3);
-  background: var(--green-f);
-}
-
-/* ── FOOTER ── */
-footer {
-  position: relative;
-  z-index: 1;
-  border-top: 1px solid var(--rule);
-  padding: 1.5rem 3.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.f-brand {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 400;
-  font-size: 0.85rem;
-  color: var(--dim2);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-.f-brand em { color: var(--gold); font-style: normal; }
-.f-links { display: flex; gap: 2.2rem; list-style: none; }
-.f-links a {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-  color: var(--dim2);
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: color 0.2s;
-}
-.f-links a:hover { color: var(--dim); }
-.f-copy {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.54rem;
-  letter-spacing: 0.1em;
-  color: var(--dim2);
-}
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.a1 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.1s; }
-.a2 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.22s; }
-.a3 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.34s; }
-.a4 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.46s; }
-.a5 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.58s; }
-.a6 { animation: fadeUp 0.7s cubic-bezier(.22,1,.36,1) both 0.7s; }
-
-.reveal { opacity: 0; transform: translateY(10px); transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1); }
-.reveal.in { opacity: 1; transform: none; }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--black); }
-::-webkit-scrollbar-thumb { background: var(--rule2); }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1024px) {
-  .hero { grid-template-columns: 1fr; padding: 110px 2rem 3rem; }
-  .hero::before { display: none; }
-  .hero-panel { display: none; }
-  .exp-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 900px) {
-  nav { padding: 0 1.5rem; }
-  .nav-center { display: none; }
-  .nav-status { display: none; }
-  .nav-burger { display: flex; }
-  .stats { grid-template-columns: 1fr 1fr; }
-  .stat:nth-child(2) { border-right: none; }
-  .stat { border-bottom: 1px solid var(--rule); }
-  .studying { padding: 0.85rem 1.5rem; }
-  .section { padding: 3.5rem 1.5rem; }
-  .pos-row { grid-template-columns: 1fr; gap: 0.5rem; }
-  .pos-row::before { display: none; }
-  .focus-grid { grid-template-columns: 1fr; }
-  .contact-inner { grid-template-columns: 1fr; }
-  .contact-left { border-right: none; border-bottom: 1px solid var(--rule); }
-  footer { padding: 1.5rem; }
-}
-@media (max-width: 640px) {
-  .exp-grid { grid-template-columns: 1fr; }
-  .hero-name { font-size: 3.2rem; }
-}
-</style>
+    @media (max-width: 990px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 730px) {
+      .nav-links, .status { display: none; }
+      .wrap { width: min(var(--maxw), calc(100% - 1rem)); }
+      .grid-3, .grid-2, .contact { grid-template-columns: 1fr; }
+      .intro, .code, .card { padding: 1rem; }
+      .btn { padding: 0.72rem 1.02rem; }
+      .chip { font-size: 0.76rem; padding: 0.28rem 0.62rem; }
+      .card p { font-size: 0.9rem; line-height: 1.7; }
+      .hero-badge { width: 64px; height: 64px; right: 0.9rem; bottom: 0.9rem; }
+    }
+  </style>
 </head>
 <body>
-
-<div id="page-veil"></div>
-
-<div id="prog"></div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">Acoustic<em>Void</em></a>
-  <ul class="nav-center" id="navLinks">
-    <li><a href="#positions" data-s="positions">Positions</a></li>
-    <li><a href="#expertise" data-s="expertise">Expertise</a></li>
-    <li><a href="#focus" data-s="focus">Focus</a></li>
-    <li><a href="#contact" data-s="contact">Contact</a></li>
-  </ul>
-  <div class="nav-status">
-    <div class="status-dot"></div>
-    Available for Enquiries
-  </div>
-  <button class="nav-burger" id="burger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<div class="mob-nav" id="mobNav">
-  <a href="#positions">Positions</a>
-  <a href="#expertise">Expertise</a>
-  <a href="#focus">Focus</a>
-  <a href="#contact">Contact</a>
-</div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-left">
-    <div class="hero-tag a1">
-      <div class="tag-line"></div>
-      <span class="tag-text">Digital Forensics Investigator</span>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#">Acoustic<span>Void</span></a>
+      <nav class="nav-links">
+        <a href="#positions" data-s="positions">Positions</a>
+        <a href="#expertise" data-s="expertise">Expertise</a>
+        <a href="#focus" data-s="focus">Focus</a>
+        <a href="#contact" data-s="contact">Contact</a>
+      </nav>
+      <div class="status">Available for Enquiries</div>
     </div>
+  </header>
 
-    <h1 class="hero-name a2">
-      Acoustic
-      <span>Void</span>
-    </h1>
-
-    <div class="hero-rule a3"></div>
-
-    <div class="hero-typed-wrap a3">
-      <span id="typed"></span>
-    </div>
-
-    <p class="hero-bio a4">
-      Specialising in <strong>Windows forensic artifact analysis</strong>, live system investigation,
-      and the detection of cheat execution methods and anti-forensic behaviour.
-      3+ years of operational experience, expanding into <strong>DFIR and incident investigation</strong>.
-    </p>
-
-    <div class="hero-btns a5">
-      <a href="#positions" class="btn btn-primary">View Positions</a>
-      <a href="#contact" class="btn btn-outline">Get in Touch</a>
-    </div>
-  </div>
-
-  <div class="hero-panel a6">
-    <div class="panel-header">
-      <div class="panel-dots">
-        <div class="panel-dot"></div>
-        <div class="panel-dot"></div>
-        <div class="panel-dot"></div>
-      </div>
-      <span class="panel-filename">profile.json</span>
-    </div>
-    <div class="panel-body">
-      <span class="pl pb">{</span>
-      <span class="pl pi"><span class="pk">"handle"</span><span class="pn">:</span> <span class="pv">"AcousticVoid"</span><span class="pn">,</span></span>
-      <span class="pl pi"><span class="pk">"field"</span><span class="pn">:</span> <span class="pv">"Digital Forensics"</span><span class="pn">,</span></span>
-      <span class="pl pi"><span class="pk">"experience"</span><span class="pn">:</span> <span class="pv">"3+ years"</span><span class="pn">,</span></span>
-      <span class="pl pi"><span class="pk">"positions"</span><span class="pn">:</span> <span class="pv">"5+"</span><span class="pn">,</span></span>
-      <span class="pl pi"><span class="pk">"specialisms"</span><span class="pn">:</span> <span class="pb">[</span></span>
-      <span class="pl" style="padding-left:2.4rem"><span class="pv">"Artifact Analysis"</span><span class="pn">,</span></span>
-      <span class="pl" style="padding-left:2.4rem"><span class="pv">"Anti-Cheat Investigation"</span><span class="pn">,</span></span>
-      <span class="pl" style="padding-left:2.4rem"><span class="pv">"Anti-Forensic Detection"</span><span class="pn">,</span></span>
-      <span class="pl" style="padding-left:2.4rem"><span class="pv">"DFIR"</span></span>
-      <span class="pl pi"><span class="pb">]</span><span class="pn">,</span></span>
-      <span class="pl pi"><span class="pk">"status"</span><span class="pn">:</span> <span class="pv">"active"</span></span>
-      <span class="pl pb">}</span>
-      <span class="pl">&nbsp;</span>
-      <span class="pl"><span class="pc">// continuously studying</span></span>
-      <span class="pl"><span class="pc">// system internals &amp; DFIR</span></span>
-      <span class="pl"><span class="pcursor"></span></span>
-    </div>
-    <div class="panel-footer">
-      <span>UTF-8 · JSON</span>
-      <span class="active-indicator">Status: Active</span>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- STATS -->
-<div class="stats">
-  <div class="stat">
-    <div class="stat-n">3<em>+</em></div>
-    <div class="stat-l">Years in Field</div>
-  </div>
-  <div class="stat">
-    <div class="stat-n">5<em>+</em></div>
-    <div class="stat-l">Active Positions</div>
-  </div>
-  <div class="stat">
-    <div class="stat-n">∞</div>
-    <div class="stat-l">Artifacts Analysed</div>
-  </div>
-  <div class="stat">
-    <div class="stat-n">0</div>
-    <div class="stat-l">Cases Unsolved</div>
-  </div>
-</div>
-
-<!-- STUDYING -->
-<div class="studying">
-  <span class="studying-lbl">Currently Studying</span>
-  <div class="studying-sep"></div>
-  <div class="studying-tags">
-    <span class="s-tag">CompTIA Security+</span>
-    <span class="s-tag">Memory Forensics</span>
-    <span class="s-tag">DFIR Methodology</span>
-    <span class="s-tag">System Internals</span>
-    <span class="s-tag">Cyber Security</span>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- POSITIONS -->
-<div class="section" id="positions">
-  <div class="sec-head reveal">
-    <span class="sec-num">01</span>
-    <h2 class="sec-title">Current Positions</h2>
-  </div>
-  <div class="pos-list reveal">
-    <div class="pos-row">
-      <div class="p-org">Detect.ac</div>
-      <div>
-        <div class="p-title">PC Checker</div>
-        <p class="p-desc">Conducting live system reviews to identify cheat software, suspicious artifacts, and anti-forensic modifications. Applying digital forensics methodology to real-time investigations against players suspected of using unauthorised software.</p>
-      </div>
-      <span class="p-badge">● Active</span>
-    </div>
-    <div class="pos-row">
-      <div class="p-org">Screenshare Community</div>
-      <div>
-        <div class="p-title">Lead Screensharer</div>
-        <p class="p-desc">Leading front-line screenshare investigations, setting investigation standards, and ensuring methodological consistency across review sessions. First responder for escalated or complex cases.</p>
-      </div>
-      <span class="p-badge">● Active</span>
-    </div>
-    <div class="pos-row">
-      <div class="p-org">Screenshare Community</div>
-      <div>
-        <div class="p-title">Staff Supervisor</div>
-        <p class="p-desc">Overseeing staff operations, conducting investigator training sessions, and maintaining quality standards across the team. Developing investigation protocols and mentoring junior screensharers in forensic technique.</p>
-      </div>
-      <span class="p-badge">● Active</span>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- EXPERTISE -->
-<div class="section" id="expertise">
-  <div class="sec-head reveal">
-    <span class="sec-num">02</span>
-    <h2 class="sec-title">Expertise Stack</h2>
-  </div>
-  <div class="exp-grid" id="expGrid">
-    <div class="exp-card">
-      <span class="exp-icon">▪</span>
-      <div class="exp-name">Windows Forensics</div>
-      <div class="exp-tags">
-        <span class="e-tag">Registry Hives</span><span class="e-tag">Prefetch</span><span class="e-tag">Amcache</span>
-        <span class="e-tag">Shimcache</span><span class="e-tag">Shellbags</span><span class="e-tag">LNK Files</span>
-        <span class="e-tag">JumpLists</span><span class="e-tag">MFT Analysis</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <span class="exp-icon">▪</span>
-      <div class="exp-name">Artifact Analysis</div>
-      <div class="exp-tags">
-        <span class="e-tag">Event Logs</span><span class="e-tag">USN Journal</span><span class="e-tag">SRUM</span>
-        <span class="e-tag">BAM / DAM</span><span class="e-tag">Timeline Analysis</span><span class="e-tag">File Metadata</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <span class="exp-icon">▪</span>
-      <div class="exp-name">Anti-Forensics Detection</div>
-      <div class="exp-tags">
-        <span class="e-tag">Evidence Wiping</span><span class="e-tag">Timestamp Manipulation</span>
-        <span class="e-tag">Log Clearing</span><span class="e-tag">Artifact Removal</span><span class="e-tag">Obfuscation</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <span class="exp-icon">▪</span>
-      <div class="exp-name">Anti-Cheat Investigation</div>
-      <div class="exp-tags">
-        <span class="e-tag">Cheat Identification</span><span class="e-tag">Execution Methods</span>
-        <span class="e-tag">Injection Techniques</span><span class="e-tag">Ghost Cheats</span><span class="e-tag">SS Evasion</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <span class="exp-icon">▪</span>
-      <div class="exp-name">Forensic Tooling</div>
-      <div class="exp-tags">
-        <span class="e-tag">FTK Imager</span><span class="e-tag">Autopsy</span><span class="e-tag">RegRipper</span>
-        <span class="e-tag">Volatility</span><span class="e-tag">Process Monitor</span><span class="e-tag">Sysinternals</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <span class="exp-icon">▪</span>
-      <div class="exp-name">Leadership & Training</div>
-      <div class="exp-tags">
-        <span class="e-tag">Live System Review</span><span class="e-tag">Case Documentation</span>
-        <span class="e-tag">Staff Training</span><span class="e-tag">Protocol Development</span><span class="e-tag">IR</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- FOCUS -->
-<div class="section" id="focus">
-  <div class="sec-head reveal">
-    <span class="sec-num">03</span>
-    <h2 class="sec-title">Areas of Focus</h2>
-  </div>
-  <div class="focus-grid reveal">
-    <div class="focus-card">
-      <div class="f-num">01</div>
-      <div>
-        <div class="f-title">Windows Forensic Artifact Analysis</div>
-        <p class="f-desc">Deep examination of system artifacts including registry hives, prefetch files, event logs, and NTFS structures to reconstruct execution timelines.</p>
-      </div>
-    </div>
-    <div class="focus-card">
-      <div class="f-num">02</div>
-      <div>
-        <div class="f-title">Cheat Execution Method Identification</div>
-        <p class="f-desc">Detecting how unauthorised software is deployed, injected, and concealed during live screenshare investigations.</p>
-      </div>
-    </div>
-    <div class="focus-card">
-      <div class="f-num">03</div>
-      <div>
-        <div class="f-title">Anti-Forensic Behaviour Detection</div>
-        <p class="f-desc">Identifying attempts to tamper with, conceal, or destroy digital evidence during or prior to a live investigation session.</p>
-      </div>
-    </div>
-    <div class="focus-card">
-      <div class="f-num">04</div>
-      <div>
-        <div class="f-title">DFIR & Incident Investigation</div>
-        <p class="f-desc">Expanding expertise into Digital Forensics and Incident Response — studying memory forensics, system internals, and investigative frameworks.</p>
-      </div>
-    </div>
-    <div class="focus-card">
-      <div class="f-num">05</div>
-      <div>
-        <div class="f-title">Staff Training & Oversight</div>
-        <p class="f-desc">Developing structured training programmes for screenshare investigators and standardising methodology across teams.</p>
-      </div>
-    </div>
-    <div class="focus-card">
-      <div class="f-num">06</div>
-      <div>
-        <div class="f-title">Continuous Professional Development</div>
-        <p class="f-desc">Actively studying cybersecurity, DFIR methodologies, forensic tooling, and system internals to expand investigative capability.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- CONTACT -->
-<div class="section" id="contact">
-  <div class="sec-head reveal">
-    <span class="sec-num">04</span>
-    <h2 class="sec-title">Contact & Enquiries</h2>
-  </div>
-  <div class="contact-inner reveal">
-    <div class="contact-left">
-      <h3 class="c-heading">Available for<br>Enquiries</h3>
-      <p class="c-sub">Whether you're looking to bring on an experienced PC checker, need an investigator for your community, or want to discuss digital forensics and anti-cheat methodology — reach out directly on Discord.</p>
-    </div>
-    <div class="contact-right-pane">
-      <a href="https://discord.gg/kb8X9dvUrW" target="_blank" rel="noopener noreferrer" class="discord-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865f2" style="flex-shrink:0;opacity:0.8">
-          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.055a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-        </svg>
-        <div>
-          <span class="d-lbl">Discord — Join Server</span>
-          <span class="d-handle">Acoustic SS Server</span>
+  <main class="wrap">
+    <section class="hero reveal">
+      <article class="glass intro">
+        <div class="pill">Digital Forensics Investigator</div>
+        <h1>Acoustic<small>Void</small></h1>
+        <div class="typed" id="typed"></div>
+        <p>
+          Specializing in <strong>Windows forensic artifact analysis</strong>, live system investigation, and detection of cheat execution methods and anti-forensic behavior.
+          3+ years of operational experience, expanding further into <strong>DFIR and incident investigation</strong>.
+        </p>
+        <div class="actions">
+          <a class="btn primary" href="#positions">View Positions</a>
+          <a class="btn" href="#contact">Get in Touch</a>
         </div>
-      </a>
-      <button class="copy-btn" id="copyBtn" onclick="copyHandle()">
-        <span id="copyLbl">Copy username</span>
-      </button>
-    </div>
-  </div>
-</div>
+        <div class="hero-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3 L20 8 V16 L12 21 L4 16 V8 Z"></path>
+            <path d="M8.5 11.5 L11 14 L15.5 9.5"></path>
+          </svg>
+        </div>
+      </article>
 
-<!-- FOOTER -->
-<footer>
-  <div class="f-brand">Acoustic<em>Void</em></div>
-  <ul class="f-links">
-    <li><a href="#positions">Positions</a></li>
-    <li><a href="#expertise">Expertise</a></li>
-    <li><a href="#focus">Focus</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="f-copy">DFIR · PC Investigation · Anti-Cheat</div>
-</footer>
+      <aside class="glass terminal">
+        <div class="term-head">profile.json</div>
+        <div class="code">
+          <div>{</div>
+          <div>&nbsp;&nbsp;<span class="k">"handle"</span>: <span class="v">"AcousticVoid"</span>,</div>
+          <div>&nbsp;&nbsp;<span class="k">"field"</span>: <span class="v">"Digital Forensics"</span>,</div>
+          <div>&nbsp;&nbsp;<span class="k">"experience"</span>: <span class="v">"3+ years"</span>,</div>
+          <div>&nbsp;&nbsp;<span class="k">"positions"</span>: <span class="v">"5+"</span>,</div>
+          <div>&nbsp;&nbsp;<span class="k">"specialisms"</span>: [<span class="v">"Artifact Analysis"</span>, <span class="v">"Anti-Cheat Investigation"</span>, <span class="v">"Anti-Forensic Detection"</span>, <span class="v">"DFIR"</span>],</div>
+          <div>&nbsp;&nbsp;<span class="k">"status"</span>: <span class="v">"active"</span></div>
+          <div>}</div>
+        </div>
+        <div class="term-foot"><span>UTF-8 / JSON</span><span style="color: var(--green);">ACTIVE</span></div>
+      </aside>
+    </section>
 
-<script>
-// Page fade-in
-const veil = document.getElementById('page-veil');
-window.addEventListener('load', () => {
-  requestAnimationFrame(() => { veil.style.opacity = '0'; });
-  setTimeout(() => { veil.style.display = 'none'; }, 450);
-});
+    <section class="stats reveal">
+      <div class="glass stat"><b>3+</b><span>Years in Field</span></div>
+      <div class="glass stat"><b>5+</b><span>Active Positions</span></div>
+      <div class="glass stat"><b>∞</b><span>Artifacts Analysed</span></div>
+      <div class="glass stat"><b>0</b><span>Cases Unsolved</span></div>
+    </section>
 
-// Progress bar
-const prog = document.getElementById('prog');
+    <section class="study reveal">
+      <em>Currently Studying</em>
+      <span class="chip">CompTIA Security+</span>
+      <span class="chip">Memory Forensics</span>
+      <span class="chip">DFIR Methodology</span>
+      <span class="chip">System Internals</span>
+      <span class="chip">Cyber Security</span>
+    </section>
 
-// Parallax on DFIR watermark
-const heroEl = document.querySelector('.hero');
-function onScroll() {
-  const sy = window.scrollY;
-  prog.style.width = (sy / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
-  if (heroEl) {
-    heroEl.style.setProperty('--parallax', `${sy * 0.18}px`);
-  }
-}
-window.addEventListener('scroll', onScroll, { passive: true });
+    <section id="positions" class="reveal">
+      <div class="section-head">
+        <h2 class="title">
+          <svg viewBox="0 0 24 24"><path d="M4 7 H20 M8 7 V5 H16 V7 M6 7 V18 H18 V7"></path></svg>
+          Current Positions
+        </h2>
+        <span>01</span>
+      </div>
+      <div class="grid-3">
+        <article class="glass card"><div class="sub">Detect.ac</div><h3>PC Checker</h3><p>Conducting live system reviews to identify cheat software, suspicious artifacts, and anti-forensic modifications. Applying digital forensics methodology to real-time investigations against players suspected of unauthorized software usage.</p><div class="tags"><span class="chip">Active</span></div></article>
+        <article class="glass card"><div class="sub">Screenshare Community</div><h3>Lead Screensharer</h3><p>Leading front-line screenshare investigations, setting investigation standards, and ensuring methodological consistency across review sessions. First responder for escalated or complex cases.</p><div class="tags"><span class="chip">Active</span></div></article>
+        <article class="glass card"><div class="sub">Screenshare Community</div><h3>Staff Supervisor</h3><p>Overseeing staff operations, conducting investigator training sessions, and maintaining quality standards. Developing investigation protocols and mentoring junior screensharers in forensic technique.</p><div class="tags"><span class="chip">Active</span></div></article>
+      </div>
+    </section>
 
-// Scroll reveal
-const ro = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.07 });
-document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+    <section id="expertise" class="reveal">
+      <div class="section-head">
+        <h2 class="title">
+          <svg viewBox="0 0 24 24"><path d="M12 3 L20 8 V16 L12 21 L4 16 V8 Z M12 8 V16 M8 10 L12 8 L16 10"></path></svg>
+          Expertise Stack
+        </h2>
+        <span>02</span>
+      </div>
+      <div class="grid-3">
+        <article class="glass card"><h3>Windows Forensics</h3><div class="tags"><span class="chip">Registry Hives</span><span class="chip">Prefetch</span><span class="chip">Amcache</span><span class="chip">Shimcache</span><span class="chip">Shellbags</span><span class="chip">LNK Files</span><span class="chip">JumpLists</span><span class="chip">MFT Analysis</span></div></article>
+        <article class="glass card"><h3>Artifact Analysis</h3><div class="tags"><span class="chip">Event Logs</span><span class="chip">USN Journal</span><span class="chip">SRUM</span><span class="chip">BAM / DAM</span><span class="chip">Timeline Analysis</span><span class="chip">File Metadata</span></div></article>
+        <article class="glass card"><h3>Anti-Forensics Detection</h3><div class="tags"><span class="chip">Evidence Wiping</span><span class="chip">Timestamp Manipulation</span><span class="chip">Log Clearing</span><span class="chip">Artifact Removal</span><span class="chip">Obfuscation</span></div></article>
+        <article class="glass card"><h3>Anti-Cheat Investigation</h3><div class="tags"><span class="chip">Cheat Identification</span><span class="chip">Execution Methods</span><span class="chip">Injection Techniques</span><span class="chip">Ghost Cheats</span><span class="chip">SS Evasion</span></div></article>
+        <article class="glass card"><h3>Forensic Tooling</h3><div class="tags"><span class="chip">FTK Imager</span><span class="chip">Autopsy</span><span class="chip">RegRipper</span><span class="chip">Volatility</span><span class="chip">Process Monitor</span><span class="chip">Sysinternals</span></div></article>
+        <article class="glass card"><h3>Leadership and Training</h3><div class="tags"><span class="chip">Live System Review</span><span class="chip">Case Documentation</span><span class="chip">Staff Training</span><span class="chip">Protocol Development</span><span class="chip">IR</span></div></article>
+      </div>
+    </section>
 
-// Staggered expertise cards
-const ecards = document.querySelectorAll('.exp-card');
-const co = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      const i = Array.from(ecards).indexOf(e.target);
-      setTimeout(() => {
-        e.target.style.transition = `opacity 0.5s cubic-bezier(.22,1,.36,1) ${i*0.06}s, transform 0.5s cubic-bezier(.22,1,.36,1) ${i*0.06}s`;
-        e.target.classList.add('visible');
-      }, 0);
-      co.unobserve(e.target);
+    <section id="focus" class="reveal">
+      <div class="section-head">
+        <h2 class="title">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+          Areas of Focus
+        </h2>
+        <span>03</span>
+      </div>
+      <div class="grid-2">
+        <article class="glass card"><h3>Windows Forensic Artifact Analysis</h3><p>Deep examination of system artifacts including registry hives, prefetch files, event logs, and NTFS structures to reconstruct execution timelines.</p></article>
+        <article class="glass card"><h3>Cheat Execution Method Identification</h3><p>Detecting how unauthorized software is deployed, injected, and concealed during live screenshare investigations.</p></article>
+        <article class="glass card"><h3>Anti-Forensic Behavior Detection</h3><p>Identifying attempts to tamper with, conceal, or destroy digital evidence during or before a live investigation session.</p></article>
+        <article class="glass card"><h3>DFIR and Incident Investigation</h3><p>Expanding expertise into Digital Forensics and Incident Response, including memory forensics, system internals, and investigative frameworks.</p></article>
+        <article class="glass card"><h3>Staff Training and Oversight</h3><p>Developing structured training programs for screenshare investigators and standardizing methodology across teams.</p></article>
+        <article class="glass card"><h3>Continuous Professional Development</h3><p>Actively studying cybersecurity, DFIR methodologies, forensic tooling, and system internals to expand investigative capability.</p></article>
+      </div>
+    </section>
+
+    <section id="contact" class="reveal">
+      <div class="section-head">
+        <h2 class="title">
+          <svg viewBox="0 0 24 24"><path d="M4 6 H20 V18 H4 Z M4 7 L12 13 L20 7"></path></svg>
+          Contact and Enquiries
+        </h2>
+        <span>04</span>
+      </div>
+      <div class="contact">
+        <article class="glass card">
+          <h3>Available for Enquiries</h3>
+          <p>Whether you are looking to bring on an experienced PC checker, need an investigator for your community, or want to discuss digital forensics and anti-cheat methodology, reach out directly on Discord.</p>
+          <a class="discord" target="_blank" rel="noopener noreferrer" href="https://discord.gg/kb8X9dvUrW">Join Acoustic SS Server</a>
+        </article>
+        <article class="glass card">
+          <h3>Direct Username</h3>
+          <p>Copy the username and message directly on Discord.</p>
+          <button class="btn" id="copyBtn">Copy username (piespeas)</button>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      <span>AcousticVoid</span>
+      <span>DFIR / PC Investigation / Anti-Cheat</span>
+    </footer>
+  </main>
+
+  <script>
+    const typedEl = document.getElementById("typed");
+    const phrases = [
+      "PC Checker / DFIR Analyst / Anti-Cheat Investigator",
+      "Windows Forensics / Artifact Analysis / Live Investigation",
+      "Lead Screensharer / Staff Supervisor / Detect.ac"
+    ];
+    let i = 0, n = 0, deleting = false;
+    function typeTick() {
+      const current = phrases[i];
+      n += deleting ? -1 : 1;
+      typedEl.textContent = current.slice(0, n);
+      if (!deleting && n === current.length) {
+        deleting = true;
+        setTimeout(typeTick, 1400);
+        return;
+      }
+      if (deleting && n === 0) {
+        deleting = false;
+        i = (i + 1) % phrases.length;
+      }
+      setTimeout(typeTick, deleting ? 26 : 42);
     }
-  });
-}, { threshold: 0.05 });
-ecards.forEach(c => co.observe(c));
+    typeTick();
 
-// Active nav
-const secs = ['positions','expertise','focus','contact'];
-const nls = document.querySelectorAll('.nav-center a[data-s]');
-window.addEventListener('scroll', () => {
-  let cur = '';
-  secs.forEach(id => { const el = document.getElementById(id); if (el && window.scrollY >= el.offsetTop - 100) cur = id; });
-  nls.forEach(a => a.classList.toggle('active', a.dataset.s === cur));
-}, { passive: true });
-
-// Typing
-const phrases = [
-  'PC Checker / DFIR Analyst / Anti-Cheat Investigator',
-  'Windows Forensics / Artifact Analysis / Live Investigation',
-  'Lead Screensharer / Staff Supervisor / Detect.ac'
-];
-let pi = 0, ci = 0, del = false;
-const typed = document.getElementById('typed');
-function tick() {
-  const cur = phrases[pi];
-  typed.textContent = del ? cur.slice(0, --ci) : cur.slice(0, ++ci);
-  if (!del && ci === cur.length) { del = true; setTimeout(tick, 2400); return; }
-  if (del && ci === 0) { del = false; pi = (pi + 1) % phrases.length; }
-  setTimeout(tick, del ? 24 : 54);
-}
-setTimeout(tick, 1000);
-setInterval(() => {
-  typed.style.borderRightColor = typed.style.borderRightColor === 'transparent' ? 'var(--gold)' : 'transparent';
-}, 520);
-
-// Smooth anchor scroll with easing
-function easeInOutQuart(t) { return t < 0.5 ? 8*t*t*t*t : 1 - 8*(--t)*t*t*t; }
-function smoothScrollTo(target) {
-  const start = window.scrollY;
-  const end = target.getBoundingClientRect().top + start - 56;
-  const duration = 800;
-  let startTime = null;
-  function step(ts) {
-    if (!startTime) startTime = ts;
-    const elapsed = ts - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    window.scrollTo(0, start + (end - start) * easeInOutQuart(progress));
-    if (progress < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const id = a.getAttribute('href').slice(1);
-    if (!id) return;
-    const el = document.getElementById(id);
-    if (el) { e.preventDefault(); smoothScrollTo(el); closeMob(); }
-  });
-});
-
-// Mobile nav
-const burger = document.getElementById('burger');
-const mobNav = document.getElementById('mobNav');
-burger.addEventListener('click', () => { burger.classList.toggle('open'); mobNav.classList.toggle('open'); });
-function closeMob() { burger.classList.remove('open'); mobNav.classList.remove('open'); }
-document.addEventListener('click', e => { if (!burger.contains(e.target) && !mobNav.contains(e.target)) closeMob(); });
-
-// Copy
-function copyHandle() {
-  navigator.clipboard.writeText('piespeas').then(() => {
-    const btn = document.getElementById('copyBtn'), lbl = document.getElementById('copyLbl');
-    btn.classList.add('copied');
-    lbl.textContent = '✓ Copied';
-    btn.style.animation = 'none';
-    requestAnimationFrame(() => {
-      btn.style.animation = 'copyPulse 0.35s cubic-bezier(.22,1,.36,1) forwards';
+    const copyBtn = document.getElementById("copyBtn");
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("piespeas");
+        copyBtn.textContent = "Copied: piespeas";
+      } catch {
+        copyBtn.textContent = "Copy failed";
+      }
+      setTimeout(() => {
+        copyBtn.textContent = "Copy username (piespeas)";
+      }, 1700);
     });
-    setTimeout(() => { btn.classList.remove('copied'); lbl.textContent = 'Copy username'; btn.style.animation = ''; }, 2200);
-  });
-}
-</script>
+
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+
+    const sections = ["positions", "expertise", "focus", "contact"];
+    const navLinks = document.querySelectorAll(".nav-links a[data-s]");
+    window.addEventListener("scroll", () => {
+      let active = "";
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 120) active = id;
+      });
+      navLinks.forEach(link => link.classList.toggle("active", link.dataset.s === active));
+    }, { passive: true });
+  </script>
 </body>
 </html>
