@@ -65,11 +65,24 @@
     padding: 5px 14px; color: var(--text-2); font-size: .85rem;
   }
 
+  #music-btn {
+    position: fixed; top: 16px; right: 16px;
+    width: 38px; height: 38px;
+    background: none; color: var(--text-2);
+    border: 1px solid var(--line-2); border-radius: 10px;
+    font-size: 15px; cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  #music-btn:hover, #music-btn:focus-visible { color: var(--text); border-color: var(--text-2); outline: none; }
+
   ::selection { background: #2a2a2a; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
+<audio id="music" src="song.mp3" loop preload="auto"></audio>
+<button id="music-btn" aria-label="Play or pause music">&#9654;</button>
+
 <main>
   <header>
     <h1>AcousticVoid</h1>
@@ -139,6 +152,18 @@ function renderExp(q = '') {
 }
 document.getElementById('search').addEventListener('input', e => renderExp(e.target.value));
 renderExp();
+
+const music = document.getElementById('music');
+const btn = document.getElementById('music-btn');
+function sync() { btn.innerHTML = music.paused ? '&#9654;' : '&#10074;&#10074;'; }
+btn.addEventListener('click', e => {
+  e.stopPropagation();
+  if (music.paused) music.play().catch(() => {}); else music.pause();
+});
+music.addEventListener('play', sync);
+music.addEventListener('pause', sync);
+// browsers block autoplay, so start on the first click anywhere
+document.addEventListener('click', () => { if (music.paused) music.play().catch(() => {}); }, { once: true });
 </script>
 </body>
 </html>
