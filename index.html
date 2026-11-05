@@ -1,857 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AcousticVoid</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');Engla
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcousticVoid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap">
+<style>
+  :root {
+    --bg: #000;
+    --text: #fff;
+    --text-2: #a1a1aa;
+    --text-3: #52525b;
+    --line: #1c1c1f;
+    --line-2: #2e2e35;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 96px 24px 96px; }
 
-        :root {
-            --bg:         #000000;
-            --bg-1:       #0a0a0a;
-            --bg-2:       #111111;
-            --bg-3:       #161616;
-            --border:     #1f1f23;
-            --border-2:   #2e2e35;
-            --text:       #ffffff;
-            --text-2:     #a1a1aa;
-            --text-3:     #52525b;
-            --nav-h:      56px;
-        }
+  h1 { font-size: clamp(2.4rem, 8vw, 3.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .role { margin-top: 10px; color: var(--text-2); font-weight: 500; }
+  .facts { margin-top: 6px; color: var(--text-3); }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+  h2 { font-size: 1rem; font-weight: 600; margin: 64px 0 16px; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-            overflow-y: hidden;
-            -webkit-font-smoothing: antialiased;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+  .links { display: grid; gap: 8px; }
+  .link {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: inherit; text-decoration: none; background: none;
+    font: inherit; text-align: left; width: 100%; cursor: pointer;
+    transition: border-color .15s;
+  }
+  .link:hover, .link:focus-visible { border-color: var(--line-2); outline: none; }
+  .link:focus-visible { border-color: var(--text-2); }
+  .link b { font-weight: 600; }
+  .link span { color: var(--text-3); font-size: .85rem; }
 
-        /* ─── SPLASH ─────────────────────────────────────── */
-        #splash {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #000;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 0.5rem;
-            cursor: pointer;
-            transition: opacity 0.25s ease;
-        }
-        #splash h1 {
-            font-size: clamp(2.2rem, 6vw, 3.5rem);
-            font-weight: 900;
-            letter-spacing: -0.03em;
-            background: linear-gradient(90deg, #fff 0%, #666 50%, #fff 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 2s linear infinite;
-        }
-        #splash p {
-            font-size: 10px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: #333;
-            animation: blink 1.4s step-end infinite;
-        }
-        @keyframes shimmer { to { background-position: -200% center; } }
-        @keyframes blink { 50% { opacity: 0; } }
+  .search {
+    width: 100%; margin-bottom: 16px;
+    background: none; color: var(--text);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 14px; font: inherit; outline: none;
+  }
+  .search::placeholder { color: var(--text-3); }
+  .search:focus { border-color: var(--line-2); }
 
-        /* ─── MUTE BTN ───────────────────────────────────── */
-        #mute-btn {
-            position: fixed; top: calc(var(--nav-h) / 2);
-            right: 1.25rem;
-            transform: translateY(-50%);
-            z-index: 1001;
-            background: transparent;
-            border: 1.5px solid var(--border-2);
-            border-radius: 8px;
-            width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-2);
-            font-size: 13px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.4s, border-color 0.2s, color 0.2s;
-        }
-        #mute-btn.show { opacity: 1; }
-        #mute-btn:hover { border-color: var(--text-2); color: var(--text); }
+  .note { color: var(--text-3); font-size: .85rem; margin-bottom: 16px; }
+  .exp { display: flex; flex-wrap: wrap; gap: 8px; }
+  .exp li {
+    list-style: none;
+    border: 1px solid var(--line); border-radius: 100px;
+    padding: 5px 14px; color: var(--text-2); font-size: .85rem;
+  }
 
-        /* ─── TOP NAV ─────────────────────────────────────── */
-        #top-nav {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: var(--nav-h);
-            z-index: 1000;
-            display: flex; align-items: center;
-            padding: 0 1.5rem;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--border);
-        }
-        .nav-logo {
-            font-weight: 900;
-            font-size: 0.95rem;
-            letter-spacing: -0.02em;
-            color: var(--text);
-            margin-right: auto;
-        }
-        .nav-links {
-            display: flex; align-items: center; gap: 4px;
-        }
-        .nav-pill {
-            padding: 6px 14px;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--text-2);
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-            display: flex; align-items: center; gap: 6px;
-            user-select: none;
-        }
-        .nav-pill:hover { color: var(--text); }
-        .nav-pill.active {
-            background: var(--bg-3);
-            color: var(--text);
-            border: 1px solid var(--border-2);
-        }
-        .nav-pill i { font-size: 0.75rem; }
-
-        /* ─── SCROLL PROGRESS ────────────────────────────── */
-        .scroll-bar {
-            position: fixed; top: var(--nav-h); left: 0;
-            height: 2px; width: 0%;
-            background: linear-gradient(90deg, #333, #fff);
-            z-index: 1000;
-            transition: width 0.15s linear;
-        }
-
-        /* ─── PAGE ───────────────────────────────────────── */
-        #page {
-            padding-top: calc(var(--nav-h) + 48px);
-            padding-bottom: 80px;
-            opacity: 0;
-            transition: opacity 0.45s ease;
-        }
-        #page.show { opacity: 1; }
-
-        .container {
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* ─── HERO ───────────────────────────────────────── */
-        #bio {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding-bottom: 80px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 80px;
-        }
-
-        /* Void orb */
-        .void-orb-wrap {
-            position: relative;
-            width: 130px; height: 130px;
-            margin-bottom: 1.5rem;
-        }
-        #void-orb {
-            width: 130px; height: 130px;
-            border-radius: 50%;
-            display: block;
-        }
-
-        /* Name with scanline flicker — the signature */
-        .hero-name {
-            font-size: clamp(2.8rem, 7vw, 4.5rem);
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            line-height: 1;
-            position: relative;
-            display: inline-block;
-            background: linear-gradient(90deg, #fff 0%, #888 50%, #fff 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 2.5s linear infinite;
-        }
-        /* scanlines overlay — understated, almost invisible */
-        .hero-name::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 3px,
-                rgba(0,0,0,0.08) 3px,
-                rgba(0,0,0,0.08) 4px
-            );
-            pointer-events: none;
-            border-radius: 2px;
-        }
-
-        .hero-role {
-            margin-top: 0.6rem;
-            font-size: 0.9rem;
-            color: var(--text-2);
-            font-weight: 500;
-            display: flex; align-items: center; justify-content: center;
-            gap: 0.4rem;
-        }
-        .hero-role i { font-size: 0.8rem; color: var(--text-3); }
-
-        /* Bio tags */
-        .bio-tags {
-            display: flex; flex-wrap: wrap;
-            justify-content: center; gap: 0.5rem;
-            margin-top: 1.25rem;
-        }
-        .bio-tag {
-            background: var(--bg-2);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 5px 14px;
-            font-size: 0.78rem;
-            color: var(--text-2);
-        }
-        .bio-tag strong { color: var(--text); font-weight: 600; }
-
-        /* ─── LINKS ──────────────────────────────────────── */
-        .section-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-3);
-            margin-bottom: 1rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .links-area { margin-top: 2.5rem; width: 100%; text-align: left; }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 0.65rem;
-        }
-        .link-card {
-            background: var(--bg-1);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0.9rem 1.1rem;
-            display: flex; align-items: center; gap: 0.75rem;
-            text-decoration: none; color: inherit;
-            transition: border-color 0.2s, transform 0.2s, background 0.2s;
-        }
-        .link-card:hover {
-            border-color: var(--border-2);
-            background: var(--bg-2);
-            transform: translateY(-2px);
-        }
-        .link-card i { font-size: 1.2rem; flex-shrink: 0; }
-        .link-name { font-weight: 700; font-size: 0.85rem; }
-        .link-handle { font-size: 0.72rem; color: var(--text-3); margin-top: 1px; }
-        .no-links { color: var(--text-3); font-size: 0.8rem; }
-
-        /* ─── EXPERIENCE ─────────────────────────────────── */
-        #experience { scroll-margin-top: calc(var(--nav-h) + 24px); }
-
-        .exp-header {
-            display: flex;
-            align-items: baseline;
-            gap: 0.75rem;
-            margin-bottom: 0.4rem;
-        }
-        .exp-header h2 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-        }
-        .exp-sub {
-            font-size: 0.75rem;
-            color: var(--text-3);
-            font-weight: 400;
-        }
-
-        .exp-disclaimer {
-            display: flex; gap: 0.5rem; flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        .badge {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 3px 12px;
-            font-size: 0.7rem;
-            color: var(--text-3);
-        }
-
-        .search-wrap {
-            position: relative;
-            margin-bottom: 1.25rem;
-        }
-        .search-icon {
-            position: absolute;
-            left: 0.9rem; top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-3);
-            font-size: 0.75rem;
-            pointer-events: none;
-        }
-        .exp-search {
-            width: 100%;
-            background: var(--bg-1);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.6rem 1rem 0.6rem 2.4rem;
-            color: var(--text);
-            font-size: 0.85rem;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .exp-search::placeholder { color: var(--text-3); }
-        .exp-search:focus { border-color: var(--border-2); }
-
-        /* Monospace grid — gives it a terminal / log register */
-        .exp-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
-            gap: 0.5rem;
-        }
-        .exp-item {
-            background: var(--bg-1);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.6rem 0.9rem;
-            display: flex; align-items: center; gap: 0.55rem;
-            transition: border-color 0.15s, background 0.15s;
-            cursor: default;
-        }
-        .exp-item:hover {
-            border-color: var(--border-2);
-            background: var(--bg-2);
-        }
-        .exp-dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--border-2);
-            flex-shrink: 0;
-            transition: background 0.15s;
-        }
-        .exp-item:hover .exp-dot { background: #777; }
-        .exp-name {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--text-2);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 400;
-        }
-        .exp-item:hover .exp-name { color: var(--text); }
-
-        .exp-footer {
-            margin-top: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--text-3);
-        }
-
-        /* ─── BG AMBIENT ─────────────────────────────────── */
-        body::before {
-            content: '';
-            position: fixed; inset: 0; z-index: -2;
-            background: repeating-linear-gradient(180deg, #0d0d0d 0%, #181818 50%, #0d0d0d 100%);
-            background-size: 100% 400%;
-            animation: bgFlow 14s linear infinite;
-            opacity: 0.35;
-        }
-        @keyframes bgFlow { to { background-position: 0 400%; } }
-
-        /* ─── RESPONSIVE ─────────────────────────────────── */
-        @media (max-width: 600px) {
-            .links-grid { grid-template-columns: 1fr; }
-            .exp-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-            .nav-logo { display: none; }
-            #page { padding-top: calc(var(--nav-h) + 28px); }
-        }
-
-        .copy-card { cursor: pointer; }
-        .copy-hint {
-            font-size: 0.8rem;
-            color: var(--text-3);
-            flex-shrink: 0;
-            transition: color 0.2s;
-        }
-        .copy-card:hover .copy-hint { color: var(--text-2); }
-
-        ::selection { background: #2a2a2a; color: #fff; }
-    </style>
+  ::selection { background: #2a2a2a; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
 </head>
 <body>
-
-<canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
-
-<!-- SPLASH -->
-<div id="splash">
+<main>
+  <header>
     <h1>AcousticVoid</h1>
-    <p>click anywhere</p>
-</div>
+    <p class="role">Screensharer</p>
+    <p class="facts">17 y/o, England, UK, English</p>
+  </header>
 
-<audio id="bg-music" loop>
-    <source src="song.mp3" type="audio/mp3">
-</audio>
+  <section>
+    <h2>Links</h2>
+    <div class="links" id="links"></div>
+  </section>
 
-<button id="mute-btn" aria-label="Toggle mute">
-    <i class="fa-solid fa-volume-high"></i>
-</button>
-
-<!-- NAV -->
-<nav id="top-nav">
-    <span class="nav-logo">AcousticVoid</span>
-    <div class="nav-links">
-        <div class="nav-pill active" data-target="bio"><i class="fa-solid fa-user"></i> Bio</div>
-        <div class="nav-pill" data-target="experience"><i class="fa-solid fa-briefcase"></i> Experience</div>
-    </div>
-</nav>
-
-<div class="scroll-bar" id="scroll-bar"></div>
-
-<!-- PAGE -->
-<div id="page">
-    <div class="container">
-
-        <!-- BIO -->
-        <section id="bio">
-            <div class="void-orb-wrap">
-                <canvas id="void-orb"></canvas>
-            </div>
-
-            <h1 class="hero-name">AcousticVoid</h1>
-
-            <p class="hero-role">
-                <i class="fa-solid fa-desktop"></i>
-                Screensharer
-            </p>
-
-            <div class="bio-tags">
-                <span class="bio-tag"><strong>17</strong> y/o</span>
-                <span class="bio-tag"><strong>England</strong>, UK</span>
-                <span class="bio-tag"><strong>English</strong></span>
-            </div>
-
-            <!-- LINKS -->
-            <div class="links-area">
-                <p class="section-label"><i class="fa-solid fa-link"></i> Links</p>
-                <div class="links-grid" id="linksGrid"></div>
-            </div>
-        </section>
-
-        <!-- EXPERIENCE -->
-        <section id="experience">
-            <div class="exp-header">
-                <h2>Experience</h2>
-                <span class="exp-sub">Active &amp; Alumni</span>
-            </div>
-            <div class="exp-disclaimer">
-                <span class="badge">⚠ Partial record</span>
-                <span class="badge">&lt;50% of total experience</span>
-            </div>
-
-            <div class="search-wrap">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input class="exp-search" id="expSearch" type="text" placeholder="Search communities…">
-            </div>
-
-            <div class="exp-grid" id="expGrid"></div>
-            <p class="exp-footer" id="expCount"></p>
-        </section>
-
-    </div>
-</div>
+  <section>
+    <h2>Experience</h2>
+    <p class="note">Partial record, less than 50% of total experience. Active and alumni.</p>
+    <input class="search" id="search" type="search" placeholder="Search communities" aria-label="Search communities">
+    <ul class="exp" id="exp"></ul>
+  </section>
+</main>
 
 <script>
-const CONFIG = {
-    links: [
-        { name: "Acoustic SS Server", handle: "Discord Server", icon: "fa-brands fa-discord", color: "#5865F2", url: "https://discord.gg/w49VG9T8BM" },
-        { name: "MC Screenshare Community", handle: "Discord Server", icon: "fa-brands fa-discord", color: "#5865F2", url: "https://discord.gg/dpam8rEJZy" },
-        { name: "Discord", handle: "piespeas", icon: "fa-brands fa-discord", color: "#5865F2", url: null, copy: "piespeas" }
-    ],
-    experience: [
-        "Hoplite","Minecraft Screenshare Community","RedLotus Forensics","Ocean Anticheat",
-        "Detect.ac","FadedMC","PVP Tiers Network","Crystal TL","Mace TL","Axe TL","Sword TL",
-        "SMP TL","UHC TL","Nethpot TL","DiaPot TL","Solitary TL","CZ/SK PVP Community",
-        "Xylon","UKFFA","WestFFA","CartPrac","Indian Tiers","Stoneworks","France Tiers",
-        "OCE TL","Vexoria Network","Ranked Bedwars","Bridge Scrims","FunnieWars","ColdPvP",
-        "Purple Prison","Combat TL","Blitz TL","PVP TL","EZ TL","Ryzen MC"
-    ]
-};
+const links = [
+  { name: "Acoustic SS Server", note: "Discord server", url: "https://discord.gg/w49VG9T8BM" },
+  { name: "MC Screenshare Community", note: "Discord server", url: "https://discord.gg/dpam8rEJZy" },
+  { name: "Discord", note: "piespeas", copy: "piespeas" }
+];
 
-// ── Links ──────────────────────────────────────
-function initLinks() {
-    const grid = document.getElementById('linksGrid');
-    if (!CONFIG.links.length) {
-        grid.innerHTML = '<span class="no-links">No links added yet.</span>';
-        return;
-    }
-    CONFIG.links.forEach(item => {
-        if (item.copy) {
-            // Click-to-copy card
-            const div = document.createElement('div');
-            div.className = 'link-card copy-card';
-            div.setAttribute('data-copy', item.copy);
-            div.innerHTML = `
-                <i class="${item.icon}" style="color:${item.color}"></i>
-                <div style="flex:1">
-                    <div class="link-name">${item.name}</div>
-                    <div class="link-handle" id="copy-handle-${item.copy}">${item.copy}</div>
-                </div>
-                <span class="copy-hint"><i class="fa-regular fa-copy"></i></span>`;
-            div.addEventListener('click', () => {
-                navigator.clipboard.writeText(item.copy).then(() => {
-                    const hint = div.querySelector('.copy-hint');
-                    const handle = div.querySelector('.link-handle');
-                    hint.innerHTML = '<i class="fa-solid fa-check"></i>';
-                    handle.textContent = 'Copied!';
-                    hint.style.color = '#a855f7';
-                    handle.style.color = '#a855f7';
-                    setTimeout(() => {
-                        hint.innerHTML = '<i class="fa-regular fa-copy"></i>';
-                        handle.textContent = item.copy;
-                        hint.style.color = '';
-                        handle.style.color = '';
-                    }, 2000);
-                });
-            });
-            grid.appendChild(div);
-        } else {
-            const a = document.createElement('a');
-            a.href = item.url; a.target = '_blank'; a.rel = 'noopener';
-            a.className = 'link-card';
-            a.innerHTML = `
-                <i class="${item.icon}" style="color:${item.color}"></i>
-                <div>
-                    <div class="link-name">${item.name}</div>
-                    <div class="link-handle">${item.handle}</div>
-                </div>`;
-            grid.appendChild(a);
-        }
+const experience = [
+  "PvPChamps / PvPHQ","Hoplite","Minecraft Screenshare Community","RedLotus Forensics","Ocean Anticheat",
+  "Detect.ac","FadedMC","PVP Tiers Network","Crystal TL","Mace TL","Axe TL","Sword TL",
+  "SMP TL","UHC TL","Nethpot TL","DiaPot TL","Solitary TL","CZ/SK PVP Community",
+  "Xylon","UKFFA","WestFFA","CartPrac","Indian Tiers","Stoneworks","France Tiers",
+  "OCE TL","Vexoria Network","Ranked Bedwars","Bridge Scrims","FunnieWars","ColdPvP",
+  "Purple Prison","Combat TL","Blitz TL","PVP TL","EZ TL","Ryzen MC"
+];
+
+const linksEl = document.getElementById('links');
+links.forEach(l => {
+  const el = document.createElement(l.copy ? 'button' : 'a');
+  el.className = 'link';
+  if (!l.copy) { el.href = l.url; el.target = '_blank'; el.rel = 'noopener'; }
+  el.innerHTML = '<b></b><span></span>';
+  el.querySelector('b').textContent = l.name;
+  const note = el.querySelector('span');
+  note.textContent = l.note || l.copy;
+  if (l.copy) {
+    el.addEventListener('click', () => {
+      navigator.clipboard.writeText(l.copy).then(() => {
+        note.textContent = 'Copied';
+        setTimeout(() => note.textContent = l.copy, 1800);
+      });
     });
-}
+  }
+  linksEl.appendChild(el);
+});
 
-// ── Experience ────────────────────────────────
+const expEl = document.getElementById('exp');
 function renderExp(q = '') {
-    const grid = document.getElementById('expGrid');
-    const count = document.getElementById('expCount');
-    const term = q.toLowerCase().trim();
-    const list = term
-        ? CONFIG.experience.filter(e => e.toLowerCase().includes(term))
-        : CONFIG.experience;
-
-    grid.innerHTML = '';
-    list.forEach(name => {
-        const d = document.createElement('div');
-        d.className = 'exp-item';
-        d.innerHTML = `<div class="exp-dot"></div><span class="exp-name" title="${name}">${name}</span>`;
-        grid.appendChild(d);
-    });
-
-    count.textContent = term
-        ? `// ${list.length} result${list.length !== 1 ? 's' : ''} for "${q}"`
-        : `// showing ${list.length} of ${CONFIG.experience.length}`;
+  const term = q.toLowerCase().trim();
+  const list = term ? experience.filter(e => e.toLowerCase().includes(term)) : experience;
+  expEl.innerHTML = '';
+  list.forEach(n => {
+    const li = document.createElement('li');
+    li.textContent = n;
+    expEl.appendChild(li);
+  });
 }
-document.getElementById('expSearch').addEventListener('input', e => renderExp(e.target.value));
-
-// ── Nav active + scroll bar ───────────────────
-function onScroll() {
-    const scrolled = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const pct = scrolled > 0 ? (window.scrollY / scrolled) * 100 : 0;
-    document.getElementById('scroll-bar').style.width = pct + '%';
-
-    const mid = window.scrollY + window.innerHeight / 2;
-    const secs = document.querySelectorAll('section[id]');
-    let closest = secs[0];
-    let minD = Infinity;
-    secs.forEach(s => {
-        const d = Math.abs(mid - (s.offsetTop + s.offsetHeight / 2));
-        if (d < minD) { minD = d; closest = s; }
-    });
-    document.querySelectorAll('.nav-pill').forEach(p => {
-        p.classList.toggle('active', p.dataset.target === closest.id);
-    });
-}
-window.addEventListener('scroll', onScroll);
-
-// ── Nav click ─────────────────────────────────
-document.querySelectorAll('.nav-pill').forEach(p => {
-    p.addEventListener('click', () => {
-        const id = p.dataset.target;
-        const el = document.getElementById(id);
-        if (!el) return;
-        const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
-        window.scrollTo({ top: id === 'bio' ? 0 : el.offsetTop - navH - 16, behavior: 'smooth' });
-    });
-});
-
-// ── Audio + reveal ────────────────────────────
-const music = document.getElementById('bg-music');
-const muteBtn = document.getElementById('mute-btn');
-const splash = document.getElementById('splash');
-const page = document.getElementById('page');
-music.volume = 1;
-
-function reveal() {
-    splash.style.opacity = '0';
-    splash.style.pointerEvents = 'none';
-    setTimeout(() => splash.remove(), 300);
-    document.body.style.overflowY = 'auto';
-    page.classList.add('show');
-    muteBtn.classList.add('show');
-    music.play().catch(() => {});
-}
-document.addEventListener('click', reveal, { once: true });
-
-muteBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    music.muted = !music.muted;
-    muteBtn.querySelector('i').className = music.muted
-        ? 'fa-solid fa-volume-xmark'
-        : 'fa-solid fa-volume-high';
-});
-
-// ── Init ──────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    initLinks();
-    renderExp();
-    onScroll();
-});
+document.getElementById('search').addEventListener('input', e => renderExp(e.target.value));
+renderExp();
 </script>
-
-<!-- Ghost cursor -->
-<script>
-(function() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const lifeSpan = 40;
-    let W = innerWidth, H = innerHeight, particles = [];
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.style.cssText = 'position:fixed;top:0;left:0;pointer-events:none;z-index:9999999;';
-    document.body.appendChild(canvas);
-    canvas.width = W; canvas.height = H;
-    window.addEventListener('resize', () => { W = innerWidth; H = innerHeight; canvas.width = W; canvas.height = H; });
-    const img = new Image();
-    img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAATCAYAAACk9eypAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAhGVYSWZNTQAqAAAACAAFARIAAwAAAAEAAQAAARoABQAAAAEAAABKARsABQAAAAEAAABSASgAAwAAAAEAAgAAh2kABAAAAAEAAABaAAAAAAAAAEgAAAABAAAASAAAAAEAA6ABAAMAAAABAAEAAKACAAQAAAABAAAADKADAAQAAAABAAAAEwAAAAAChpcNAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABqElEQVQoFY3SPUvDQBgH8BREpRHExYiDgmLFl6WC+AYmWeyLg4i7buJX8DMpOujgyxGvUYeCgzhUQUSKKLUS0+ZyptXh8Z5Ti621ekPyJHl+uftfomhaf9Ei5JyxXKfynyEA6EYcLHpwyflT958GAQ7DTABNHd8EbtDbEH2BD5QEQmi2mM8P/Iq+A0SzszEg+3sPjDnDdVEtQKQbMUidHD3xVzf6A9UDEmEm+8h9KTqTVUjT+vB53aHrCbAPiceYq1dQI1Aqv4EhMll0jzv+Y0yiRgCnLRSYyDQHVoqUXe4uKL9l+L7GXC4vkMhE6eW/AOJs9k583ORDUyXMZ8F5SVHVVnllmPNKSFagAJ5DofaqGXw/gHBYg51dIldkmknY3tguv3jOtHR4+MqAzaraJXbEhqHhcQlwGSOi5pytVQHZLN5s0WNe8HPrLYlFsO20RPHkImxsbmHdLJFI76th7Z4SeuF53hTeFLvhRCJRCTKZKxgdnRDbW+iozFJbBMw14/ElwGYc0egMBMFzT21f5Rog33Z7dX02GBm7WV5ZfT5Nn5bE3zuCDe9UxdTpNvK+5AAAAABJRU5ErkJggg==";
-    document.body.addEventListener('mousemove', e => particles.push({ x: e.clientX, y: e.clientY, life: lifeSpan }));
-    (function loop() {
-        ctx.clearRect(0, 0, W, H);
-        particles = particles.filter(p => p.life > 0);
-        particles.forEach(p => { ctx.globalAlpha = Math.max(p.life / lifeSpan, 0); ctx.drawImage(img, p.x, p.y); p.life--; });
-        requestAnimationFrame(loop);
-    })();
-})();
-</script>
-
-<!-- Snow -->
-<script>
-(function() {
-    const canvas = document.getElementById('snow-canvas');
-    const ctx = canvas.getContext('2d');
-    let W = innerWidth, H = innerHeight;
-    canvas.width = W; canvas.height = H;
-    window.addEventListener('resize', () => { W = innerWidth; H = innerHeight; canvas.width = W; canvas.height = H; });
-    const SHAPES = ['star', 'diamond', 'cross', 'circle'];
-    const flakes = Array.from({ length: 80 }, () => ({
-        x: Math.random() * W, y: Math.random() * H,
-        r: Math.random() * 3.5 + 1.2,
-        speed: Math.random() * 0.8 + 0.3,
-        wind: Math.random() * 0.4 - 0.2,
-        opacity: Math.random() * 0.5 + 0.15,
-        wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: Math.random() * 0.012 + 0.004,
-        rot: Math.random() * Math.PI * 2,
-        rotSpeed: (Math.random() - 0.5) * 0.02,
-        shape: SHAPES[Math.floor(Math.random() * SHAPES.length)]
-    }));
-
-    function drawStar(ctx, r) {
-        const pts = 4, inner = r * 0.45;
-        ctx.beginPath();
-        for (let i = 0; i < pts * 2; i++) {
-            const angle = (i * Math.PI) / pts - Math.PI / 2;
-            const radius = i % 2 === 0 ? r : inner;
-            i === 0 ? ctx.moveTo(Math.cos(angle) * radius, Math.sin(angle) * radius)
-                    : ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
-        }
-        ctx.closePath();
-    }
-    function drawDiamond(ctx, r) {
-        ctx.beginPath();
-        ctx.moveTo(0, -r); ctx.lineTo(r * 0.6, 0);
-        ctx.lineTo(0, r);  ctx.lineTo(-r * 0.6, 0);
-        ctx.closePath();
-    }
-    function drawCross(ctx, r) {
-        const t = r * 0.3;
-        ctx.beginPath();
-        ctx.moveTo(-t, -r); ctx.lineTo(t, -r); ctx.lineTo(t, -t);
-        ctx.lineTo(r, -t);  ctx.lineTo(r, t);  ctx.lineTo(t, t);
-        ctx.lineTo(t, r);   ctx.lineTo(-t, r);  ctx.lineTo(-t, t);
-        ctx.lineTo(-r, t);  ctx.lineTo(-r, -t); ctx.lineTo(-t, -t);
-        ctx.closePath();
-    }
-    function drawCircle(ctx, r) {
-        ctx.beginPath();
-        ctx.arc(0, 0, r, 0, Math.PI * 2);
-    }
-
-    (function animate() {
-        ctx.clearRect(0, 0, W, H);
-        flakes.forEach(f => {
-            f.wobble += f.wobbleSpeed;
-            f.rot += f.rotSpeed;
-            f.x += f.wind + Math.sin(f.wobble) * 0.3;
-            f.y += f.speed;
-            if (f.y > H + 6) { f.y = -6; f.x = Math.random() * W; }
-            if (f.x > W + 6) f.x = -6;
-            if (f.x < -6) f.x = W + 6;
-            ctx.save();
-            ctx.globalAlpha = f.opacity;
-            ctx.translate(f.x, f.y);
-            ctx.rotate(f.rot);
-            ctx.fillStyle = '#a855f7';
-            ctx.shadowColor = 'rgba(168,85,247,0.6)';
-            ctx.shadowBlur = f.r * 2;
-            if (f.shape === 'star')        drawStar(ctx, f.r);
-            else if (f.shape === 'diamond') drawDiamond(ctx, f.r);
-            else if (f.shape === 'cross')   drawCross(ctx, f.r);
-            else                            drawCircle(ctx, f.r);
-            ctx.fill();
-            ctx.restore();
-        });
-        requestAnimationFrame(animate);
-    })();
-})();
-</script>
-
-
-<!-- Void Orb -->
-<script>
-(function() {
-    const canvas = document.getElementById('void-orb');
-    const ctx = canvas.getContext('2d');
-    const DPR = window.devicePixelRatio || 1;
-    const SIZE = 130;
-    canvas.width = SIZE * DPR;
-    canvas.height = SIZE * DPR;
-    ctx.scale(DPR, DPR);
-    const cx = SIZE / 2, cy = SIZE / 2;
-
-    // Orbiting particles
-    const ORBITERS = Array.from({ length: 18 }, (_, i) => ({
-        angle: (i / 18) * Math.PI * 2,
-        speed: 0.004 + Math.random() * 0.006,
-        orbit: 38 + Math.random() * 18,
-        size: 1.2 + Math.random() * 2,
-        opacity: 0.4 + Math.random() * 0.5
-    }));
-
-    // Inner swirling dots
-    const SWIRL = Array.from({ length: 28 }, (_, i) => ({
-        angle: (i / 28) * Math.PI * 2,
-        speed: -0.008 - Math.random() * 0.01,
-        orbit: 10 + Math.random() * 18,
-        size: 0.8 + Math.random() * 1.2,
-        opacity: 0.3 + Math.random() * 0.4
-    }));
-
-    let t = 0;
-    function draw() {
-        ctx.clearRect(0, 0, SIZE, SIZE);
-        t += 0.016;
-
-        // Outer glow ring
-        const outerGlow = ctx.createRadialGradient(cx, cy, 28, cx, cy, 65);
-        outerGlow.addColorStop(0, 'rgba(168,85,247,0.0)');
-        outerGlow.addColorStop(0.6, 'rgba(168,85,247,0.08)');
-        outerGlow.addColorStop(1, 'rgba(168,85,247,0.0)');
-        ctx.beginPath();
-        ctx.arc(cx, cy, 65, 0, Math.PI * 2);
-        ctx.fillStyle = outerGlow;
-        ctx.fill();
-
-        // Core orb — deep void with purple glow
-        const core = ctx.createRadialGradient(cx - 8, cy - 8, 2, cx, cy, 28);
-        core.addColorStop(0, 'rgba(220,180,255,0.9)');
-        core.addColorStop(0.25, 'rgba(168,85,247,0.85)');
-        core.addColorStop(0.6, 'rgba(88,28,135,0.7)');
-        core.addColorStop(1, 'rgba(0,0,0,0.95)');
-        ctx.beginPath();
-        ctx.arc(cx, cy, 28, 0, Math.PI * 2);
-        ctx.fillStyle = core;
-        ctx.shadowColor = 'rgba(168,85,247,0.9)';
-        ctx.shadowBlur = 22;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Pulsing ring
-        const pulse = 0.5 + 0.5 * Math.sin(t * 1.8);
-        ctx.beginPath();
-        ctx.arc(cx, cy, 30 + pulse * 3, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(168,85,247,${0.15 + pulse * 0.25})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // Inner swirl
-        SWIRL.forEach(p => {
-            p.angle += p.speed;
-            const x = cx + Math.cos(p.angle) * p.orbit;
-            const y = cy + Math.sin(p.angle) * p.orbit;
-            ctx.beginPath();
-            ctx.arc(x, y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(220,180,255,${p.opacity})`;
-            ctx.fill();
-        });
-
-        // Orbiting particles
-        ORBITERS.forEach(p => {
-            p.angle += p.speed;
-            const wobble = Math.sin(p.angle * 3 + t) * 4;
-            const x = cx + Math.cos(p.angle) * (p.orbit + wobble);
-            const y = cy + Math.sin(p.angle) * (p.orbit + wobble) * 0.55; // elliptical
-            ctx.beginPath();
-            ctx.arc(x, y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(168,85,247,${p.opacity})`;
-            ctx.shadowColor = 'rgba(168,85,247,0.8)';
-            ctx.shadowBlur = 5;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-        });
-
-        requestAnimationFrame(draw);
-    }
-    draw();
-})();
-</script>
-
 </body>
 </html>
